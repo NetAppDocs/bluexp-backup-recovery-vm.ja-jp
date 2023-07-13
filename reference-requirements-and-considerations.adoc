@@ -1,0 +1,34 @@
+---
+permalink: reference-requirements-and-considerations.html 
+sidebar: sidebar 
+keywords: requirements, considerations 
+summary: VMに対してBlueXPのバックアップとリカバリを使用する前に、いくつかの要件と考慮事項について理解しておく必要があります。 
+---
+= 要件および考慮事項
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+[role="lead"]
+VMに対してBlueXPのバックアップとリカバリを使用する前に、いくつかの要件と考慮事項について理解しておく必要があります。
+
+* BlueXPのVMのバックアップとリカバリは、プラグインを使用してWindowsシステムとLinuxシステムのどちらのデータを保護するかに関係なく、Linux VMとして導入されます。
+* AWSのVMCにあるVMには、BlueXPのバックアップとリカバリを導入する必要があります。
++
+VMとVMCのBlueXPバックアップ/リカバリでは、同じタイムゾーンを使用する必要があります。バックアップスケジュールは、BlueXPのVMのバックアップとリカバリが導入されているタイムゾーンで実行されます。VMCは、VMCが配置されているタイムゾーンのデータを報告します。そのため、VMとVMCのBlueXPのバックアップとリカバリが異なるタイムゾーンにある場合は、BlueXPのBackup and Recovery for VMs Dashboardのデータがレポートのデータと同じにならないことがあります。
+
+* 名前に特殊文字を含むフォルダにVMのBlueXPバックアップおよびリカバリを導入することはできません。
++
+フォルダ名には、 $ ！ @ # % ^ & （） _ + ｛ ｝ ' ；、 * ？ " <> | という特殊文字は使用できません
+
+* AWS上のVMCごとに、VM用のBlueXPバックアップ/リカバリのインスタンスを個別に導入して登録する必要があります。
++
+** AWS上の各VMCを、VM用のBlueXP Backup and Recoveryの個別のインスタンスとペアリングする必要があります。
+** VMのBlueXPのバックアップとリカバリの各インスタンスを個別のLinux VMとして導入する必要があります。
++
+たとえば、AWSのVMCの6つの異なるインスタンスからバックアップを実行する場合は、6つのホストにVMインスタンスのBlueXPバックアップ/リカバリを6つ導入し、AWSの各VMCをVMのBlueXPバックアップ/リカバリの固有のインスタンスとペアにする必要があります。
+
+
+
+

@@ -1,0 +1,22 @@
+---
+permalink: concept-unsupported-workflows.html 
+sidebar: sidebar 
+keywords: unsupported, workflows 
+summary: サポートされないワークフロー 
+---
+= サポートされないワークフロー
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+[role="lead"]
+VMS 1.0リリースのBlueXPのバックアップとリカバリでは、次のワークフローはサポートされません。
+
+* VMDK を接続および接続解除する
+* データストアのマウントとアンマウント
+* ゲストファイルとフォルダをリストアします
+* 別の場所にリストアします
+* 「証明書」認証方式を使用してストレージシステムを追加してください
+* NetApp ONTAP FlexGroupボリュームを追加します
+

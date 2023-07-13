@@ -1,0 +1,28 @@
+---
+permalink: whats-new.html 
+sidebar: sidebar 
+keywords: 2-node switched Cisco 92300YC cluster switch migration 
+summary: BlueXPのVM向けバックアップ/リカバリの最新情報をご紹介します。 
+---
+= BlueXPのVM向けバックアップ/リカバリの新機能
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+[role="lead"]
+BlueXPのVM向けバックアップ/リカバリの新機能をご紹介します。
+
+
+
+== 2023年7月13日
+
+
+
+=== VMS 1.0向けBlueXPのバックアップ/リカバリ機能がGAになりました
+
+BlueXPのVMのバックアップとリカバリを使用して、仮想マシンのデータを保護できます。Amazon FSx上のデータストアをバックアップし、仮想マシンを元の場所にリストアできます。
+
+この解決策は、VMware Cloud on AWSおよびAmazon FSx for NetApp ONTAP上の仮想マシンとデータストアに特化しています。
+
+link:concept-bluexp-backup-and-recovery-for-virtual-machines-on-amazon-fsx.html["Amazon FSx上の仮想マシン向けBlueXPバックアップ/リカバリ"]

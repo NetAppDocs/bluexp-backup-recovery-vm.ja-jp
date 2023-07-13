@@ -1,0 +1,49 @@
+---
+settings:
+  name: BlueXP backup and recovery for VMs
+  internal:
+    pdf_enabled: true
+  prod:
+    pdf_enabled: true
+    harmony_enabled: false
+  langs: ja-jp,us-en,ko-kr,zh-cn,zh-tw,de-de,es-es,fr-fr,it-it
+sidebar:
+  entries:
+  - title: BlueXPのVM向けバックアップ/リカバリドキュメント
+    url: "/index.html"
+  - title: リリースノート
+    url: "/whats-new.html"
+  - title: はじめに
+    entries:
+    - title: BlueXPのVMのバックアップとリカバリについて説明します
+      url: "/concept-bluexp-backup-and-recovery-for-virtual-machines-on-amazon-fsx.html"
+    - title: サポートされないワークフロー
+      url: "/concept-unsupported-workflows.html"
+  - title: BlueXPでVMのバックアップとリカバリを導入
+    entries:
+    - title: 要件および考慮事項
+      url: "/reference-requirements-and-considerations.html"
+    - title: OVAをダウンロードします
+      url: "/task-download-the-open-virtual-appliance.html"
+    - title: BlueXPでVMのバックアップとリカバリを導入
+      url: "/task-deploy-bluexp-backup-and-recovery-for-vms.html"
+  - title: NFSデータストアをAmazon FSxにバックアップ
+    entries:
+    - title: ストレージを追加します
+      url: "/task-add-storage.html"
+    - title: バックアップポリシーを作成する
+      url: "/task-create-backup-policies-for-vms-and-datastores.html"
+    - title: リソースグループを作成する
+      url: "/task-create-resource-groups.html"
+    - title: リソースグループをオンデマンドでバックアップする
+      url: "/task-back-up-resource-groups-on-demand.html"
+  - title: Amazon FSxから仮想マシンをリストア
+    url: "/task-restore-virtual-machines-from-amazon-fsx.html"
+  - title: 知識とサポート
+    entries:
+    - title: サポートに登録します
+      url: "/task-support-registration.html"
+    - title: ヘルプを表示します
+      url: "/task-get-help.html"
+  - title: 法的通知
+    url: "/legal-notices.html"

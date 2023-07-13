@@ -1,0 +1,47 @@
+---
+permalink: task-download-the-open-virtual-appliance.html 
+sidebar: sidebar 
+keywords: download, open virtual appliance 
+summary: Open Virtual Appliance（OVA；オープン仮想アプライアンス）をインストールする前に、vCenterに証明書を追加してください。.tarファイルにはOVA証明書とEntrust Root証明書とIntermediate証明書が含まれており、証明書は証明書フォルダ内にあります。OVA環境は、VMware vCenter 8.0以降でサポートされます。 
+---
+= Open Virtual Appliance（OVA；オープン仮想アプライアンス）のダウンロード
+:allow-uri-read: 
+:experimental: 
+:icons: font
+:imagesdir: ../media/
+
+
+[role="lead"]
+Open Virtual Appliance（OVA；オープン仮想アプライアンス）をインストールする前に、vCenterに証明書を追加してください。。 `.tar` ファイルにOVA証明書とEntrustルート証明書と中間証明書が含まれています。証明書は証明書フォルダ内にあります。OVA環境は、VMware vCenter 8.0以降でサポートされます。
+
+Entrust証明書によって署名されたOVAが信頼されていない場合は、次の手順を実行して問題を解決する必要があります。
+
+.手順
+. VMS OVAのBlueXPバックアップ/リカバリをダウンロードするには、次の手順を実行します。
++
+** にログインします https://mysupport.netapp.com/products/index.html["NetApp Support Site"^]
+** 製品のリストから* BlueXP Backup and Recovery for VMs *を選択し、*[Download Latest Release]*ボタンをクリックします。
+** BlueXPのVMのバックアップとリカバリをダウンロードします `.tar` 任意の場所にファイルを移動します。
+
+
+. tarファイルの内容を展開します。tarファイルには、ovaフォルダとcertsフォルダが含まれています。certsフォルダには、Entrustルート証明書と中間証明書が含まれています。
+. vSphere Clientのクレデンシャルを使用してAWS上のVMCにログインします。
+. メニューの[Administration][Certificates]>[Certificate Management]に移動します。
+. [信頼されたルート証明書]*の横にある*[追加]*をクリックします。
++
+** certsフォルダに移動します。
+** Entrustルート証明書と中間証明書を選択します。
+** 各証明書を一度に1つずつインストールします。
+
+
+. 証明書は、[信頼されたルート証明書]の下のパネルに追加されます。
++
+証明書をインストールすると、OVAを検証して導入できます。
+
+
+
+[NOTE]
+====
+ダウンロードしたOVAが改ざんされていない場合は、[Publisher]列に[Trusted certificate]と表示されます。
+
+====

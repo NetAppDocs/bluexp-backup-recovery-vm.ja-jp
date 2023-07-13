@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blocks>
+  <block id="ad91d6e1b981614b514c3c61b0ee65d6" category="summary">Amazon FSx上の仮想マシン向けBlueXPバックアップ/リカバリ：</block>
+  <block id="33d898814cf484610ac330ca02a84bf1" category="doc">BlueXPのVMのバックアップとリカバリに関するドキュメント</block>
+  <block id="63fd03a49eb1b8cee419487f40c1c640" category="summary">VMをバックアップまたはリストアする前に、「Amazon FSx for NetApp ONTAP」または「Amazon FSx for NetApp ONTAP SVM」をストレージシステムとして追加する必要があります。ストレージを追加することで、BlueXPのVMのバックアップとリカバリをvCenterで認識して管理できるようになります。</block>
+  <block id="6888e60d18ef291e7b86bc7e530fe2a8" category="doc">ストレージを追加します</block>
+  <block id="135b308ed83c53f1516b7c754566d1c4" category="paragraph-title">作業を開始する前に</block>
+  <block id="11db09e52e3f95807370d6474395dd1d" category="paragraph">ESXiサーバ、VMのBlueXPバックアップとリカバリ、および各vCenterが同時に同期されている必要があります。ストレージを追加しようとしても、 vCenter の時刻設定が同期されていないと、 Java 証明書エラーが表示されて処理が失敗することがあります。</block>
+  <block id="bbe48fb854ea022537208eeeff822f91" category="paragraph-title">このタスクについて</block>
+  <block id="84628fc1d27c48d8dcd6599f4df80303" category="paragraph">BlueXPのVMのバックアップとリカバリは、直接接続されたStorage VMとストレージクラスタ内のStorage VMに対してバックアップとリストアの処理を実行します。</block>
+  <block id="1854db6915a69cc8e0521d1b8e0933e6" category="list-text">Storage VM の名前は管理 LIF に解決できる必要があります。</block>
+  <block id="348417f253bbf297603d548c58260619" category="paragraph">BlueXPのVMのバックアップとリカバリでStorage VM名のetcホストエントリを追加した場合は、それらのエントリが仮想アプライアンスからも解決できることを確認する必要があります。</block>
+  <block id="5e89455802b490325e8b5de5d2e292f0" category="paragraph">管理 LIF に解決できない名前の Storage VM を追加すると、プラグインがその Storage VM 上のデータストアまたはボリュームを検出できないため、スケジュールされたバックアップジョブが失敗します。この場合は、VMのバックアップとリカバリ用にStorage VMをBlueXPに追加して管理LIFを指定するか、Storage VMを含むクラスタを追加してクラスタ管理LIFを指定してください。</block>
+  <block id="21b98222ac31571d620d0f173e2dc390" category="list-text">VMのBlueXPバックアップ/リカバリの複数のインスタンス間、またはvCenter上のVMのWindows SnapCenter ServerとBlueXPバックアップ/リカバリの複数のインスタンス間で、ストレージ認証の詳細が共有されません。</block>
+  <block id="f3a29486bed19a90f2da6d007818b427" category="list-title">手順</block>
+  <block id="f97c1a1d745c01091fed7d45a3c6e8d1" category="list-text">vSphereクライアントの左側のナビゲーションペインで、*ストレージシステム*をクリックします。</block>
+  <block id="5eb6024701b8aff71a94567d88cbcfaf" category="list-text">[ストレージシステム]ページで、*[追加]*をクリックします。</block>
+  <block id="d41d8cd98f00b204e9800998ecf8427e" category="inline-image-macro"></block>
+  <block id="4538d237be8cb4764e12c71d417cddb2" category="paragraph"><block ref="4538d237be8cb4764e12c71d417cddb2" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="82a67865bc4fe175c8c93e77015108b9" category="list-text">ストレージシステムの追加*ウィザードで、Storage VMまたはクラスタの基本情報を入力します。</block>
+  <block id="644127ba6378708209cd3cd7be726b74" category="list-text">[Credentials]*認証方法を選択し、Amazon FSx管理者としてログインします。</block>
+  <block id="7dee7e783d13b6d5d415926ce0bfc306" category="list-text">[ 追加（ Add ） ] をクリックします。</block>
+  <block id="68db6c72e1ca65960795aee487114a61" category="paragraph">ストレージクラスタを追加すると、そのクラスタ内のすべての Storage VM が自動的に追加されます。自動的に追加された Storage VM （「暗黙的な」 Storage VM とも呼ばれます）は、クラスタのサマリーページに、ユーザ名ではなくハイフン（ - ）で表示されます。ユーザ名は、明示的なストレージエンティティに対してのみ表示されます。</block>
+  <block id="20dbe7e0dd0012ef2ae377097de8cdd8" category="summary">BlueXPのVMのバックアップとリカバリを使用してVMとデータストアをバックアップするには、事前にバックアップポリシーを作成しておく必要があります。</block>
+  <block id="8e76505b54822d8003db9695ebc8dded" category="doc">VM とデータストアのバックアップポリシーの作成</block>
+  <block id="271beae8f11b01c3f45767fc1bd5c1a9" category="list-text">前提条件を確認しておく必要があります。</block>
+  <block id="020c68712d58d0c6ae79d6422851ae45" category="list-text">セカンダリストレージの関係を設定しておく必要があります。</block>
+  <block id="06e3c2a5372f8d3d86877d169badf325" category="list-text">Snapshot コピーをミラーセカンダリストレージまたはバックアップセカンダリストレージにレプリケートする場合は、関係が設定されていることと、 SnapCenter 管理者がユーザにソースとデスティネーションの両方のボリューム用に Storage VM を割り当てておく必要があります。</block>
+  <block id="fe693831347b037af8a5d8babd163c2e" category="list-text">NFSデータストア上のVersion-FlexibleMirror関係でSnapshotコピーをセカンダリストレージに正常に転送するには、SnapMirrorポリシータイプがAsynchronous Mirrorであり、「all_source_snapshots」オプションがオンになっていることを確認します。</block>
+  <block id="b3f67a94ed7b9ba31bd2698489179f27" category="list-text">セカンダリストレージ（mirror-vault）上のSnapshotコピーの数が上限に達すると、バックアップ処理でバックアップを登録して保持を適用する処理が失敗し、次のエラーが表示されます。This Snapshot copy is currently used as a reference Snapshot copy by one or more SnapMirror relationships.Snapshotコピーを削除すると、原因の以降のSnapMirror処理が失敗する可能性があります。</block>
+  <block id="7cb7ec638ee3f628b5dd7b29b735054f" category="paragraph">この問題を修正するには、 Snapshot コピーの上限に達しないように、セカンダリストレージの SnapMirror 保持ポリシーを設定します。</block>
+  <block id="afb53cfa3120d45d1a3d76236dda1012" category="list-text">VMと整合性のあるバックアップを作成する場合は、VMwareツールをインストールして実行する必要があります。VMを休止するには、VMware Toolsが必要です。</block>
+  <block id="1b29ba4e6cf39ab8317f76076c2baeed" category="list-text">BlueXPのVMのバックアップとリカバリの左側にあるナビゲーションペインで、*[Policies]*をクリックします。</block>
+  <block id="2be9030b1634912139eaab40b3092dce" category="list-text">[ポリシー]*ページで、*[作成]*をクリックしてウィザードを開始します。
+<block ref="906916a1f3ea00481784d2dcf7dafe3d" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="f9537d47a4839ca02a4ca9726157e701" category="list-text">[New Backup Policy]*ページで、ポリシーを使用するAWS上のVMCを選択し、ポリシー名と概要を入力します。</block>
+  <block id="9efc9e0c08da510b5195bb9dc4b1b7c2" category="list-text">サポートされない文字です</block>
+  <block id="69a02b2d668a0ebee1d9ac100a00074c" category="paragraph">VM 、データストア、クラスタ、ポリシー、バックアップ、 またはリソースグループ名： %&amp;*$#@ ！\ / ： * ？"&lt;&gt; - | ； ' 、。</block>
+  <block id="9269e051e7bd31dcb56553a7f11183a2" category="paragraph">アンダースコア文字（ _ ）を使用できます。
+<block ref="6648fd21234a7ed16d280775be5d73d3" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="a923c6bf503ee78e9fc4b4479248cff6" category="list-text">保持設定を指定します。</block>
+  <block id="2eff7650afc7423cc6df7c21eaaf0430" category="paragraph">SnapVault レプリケーションを有効にする場合は、保持数を 2 以上に設定する必要があります。保持数を 1 バックアップに設定すると、保持処理が失敗することがあります。これは、新しい Snapshot コピーがターゲットにレプリケートされるまで、最初の Snapshot コピーが SnapVault 関係の参照 Snapshot コピーになるためです。</block>
+  <block id="6e0b19728555d1c2b7bc98ce7895aced" category="list-text">頻度の設定を指定します。</block>
+  <block id="52b19e85e6a29b6fe5690f47944f859f" category="paragraph">ポリシーではバックアップの頻度のみを指定します。バックアップの具体的なスケジュールは、リソースグループで定義します。したがって、複数のリソースグループで同じポリシーとバックアップ頻度を使用している場合でも、別々のバックアップスケジュールを設定できます。</block>
+  <block id="352857d99c458903c7aae23409a114d5" category="list-text">[ * Replication * ] フィールドで、次の表に示すように、セカンダリ・ストレージへのレプリケーションのタイプを指定します。</block>
+  <block id="ca992da0d36b851405bbef3bf1544e14" category="cell">フィールド名</block>
+  <block id="aeb7716438e30f2a23e6f50ba16352b4" category="cell">操作</block>
+  <block id="fa23470db7b9905492d6e4cdd14b03e5" category="paragraph">バックアップ後に SnapMirror を更新</block>
+  <block id="a7352564cfc3174fc18763ada4c4e33e" category="paragraph">プライマリバックアップボリュームとの SnapMirror 関係がある別のボリュームにバックアップセットのミラーコピーを作成する場合は、このオプションを選択します。
+ミラーバックアップ関係が設定されたボリュームでバックアップをミラーバックアップデスティネーションにコピーする場合は、「バックアップ後に SnapVault を更新」オプションのみを選択する必要があります。</block>
+  <block id="449ebe6b7b153c1de3b22c54152f11dd" category="paragraph">このオプションは、 SnapCenter Plug-in for VMware vSphere 4.5 以降の FlexGroup ボリュームのデータストアでサポートされます。</block>
+  <block id="05c92158f412c4a911e0b21a09762bf2" category="paragraph">バックアップ後に SnapVault を更新してください</block>
+  <block id="7f7a2015d521bd1848a92d266cd3fae5" category="paragraph">プライマリバックアップボリュームとの SnapVault 関係がある別のボリュームでディスクツーディスクバックアップレプリケーションを実行する場合は、このオプションを選択します。</block>
+  <block id="ec9a0601ee927cc668ce79eac801b520" category="paragraph">ボリュームに mirror-vault 関係が設定されている場合は、このオプションのみを選択する必要があります。</block>
+  <block id="765c798c0aa1aec3ca7ca68ec68f7e28" category="paragraph">Snapshot ラベル</block>
+  <block id="b96b0586842e6c7544966f830118b637" category="paragraph">このポリシーで作成された SnapVault および SnapMirror Snapshot コピーに追加するオプションのカスタムラベルを入力します。
+Snapshot ラベルは、このポリシーで作成された Snapshot をセカンダリストレージシステム上の他の Snapshot と区別する際に役立ちます。</block>
+  <block id="97b7176ff6062e6fac08db2a54668272" category="paragraph">Snapshot コピーのラベルは 31 文字以内で指定します。</block>
+  <block id="3c470c222c149a078de44686443ab4cf" category="list-text">*オプション*：［詳細］フィールドで、必要なフィールドを選択します。次の表に、 Advanced フィールドの詳細を示します。</block>
+  <block id="a7ef08fff5cdd9899a1574f69f5c4428" category="paragraph">VM 整合性</block>
+  <block id="c5622748b0dae394073783566c4253de" category="paragraph">バックアップジョブが実行されるたびに VM を休止して VMware スナップショットを作成する場合は、このチェックボックスをオンにします。</block>
+  <block id="5fe139943a50a82fa435d79d3988038a" category="paragraph">VM整合性バックアップを実行するには、VMでVMwareツールを実行する必要があります。VMware Tools が実行されていない場合は、代わりに crash-consistent バックアップが実行されます。</block>
+  <block id="d619892da7c9e176ad3a4bb3414fcef1" category="paragraph">VM 整合性ボックスをオンにすると、バックアップ処理に時間がかかり、より多くのストレージスペースが必要になる場合があります。このシナリオでは、 VM を最初に休止したあと、 VMware によって VM 整合性のある Snapshot が実行され、 SnapCenter によってバックアップ処理が実行されたあと、 VM の処理が再開されます。</block>
+  <block id="fe8e8bb4e4841e4b613a335eb4397fa6" category="paragraph">VM ゲストメモリは VM 整合性スナップショットに含まれません。</block>
+  <block id="5b5f807a09f098321a7b30d765219c05" category="paragraph">独立型ディスクのデータストアを含める</block>
+  <block id="495ad64d2a6a40cfac27d689d4edd34b" category="paragraph">一時的なデータを含む独立型ディスクのデータストアをバックアップに含める場合は、このチェックボックスをオンにします。</block>
+  <block id="a83f1ca5ad00b39773d9e6a26b0e70b2" category="paragraph">スクリプト</block>
+  <block id="38e0c62f029f528b565802759f84d383" category="paragraph">バックアップ処理の前後に SnapCenter VMware プラグインを実行するプリスクリプトまたはポストスクリプトの完全修飾パスを入力します。たとえば、 SNMP トラップの更新、アラートの自動化、ログの送信などをスクリプトで実行できます。スクリプトパスは、スクリプト実行時に検証されます。</block>
+  <block id="7e3f0e5af0f3deb2b599c2b06c202c37" category="paragraph">プリスクリプトとポストスクリプトは仮想アプライアンス VM 上にある必要があります。複数のスクリプトを入力するには、各スクリプトパスの後にEnterキーを押して、各スクリプトを個別の行に表示します。セミコロンは使用できません。</block>
+  <block id="0e966e38f37db4fe0a9b1d6f014e044c" category="paragraph">ポリシーが作成されたことを確認し、ポリシーページでポリシーを選択してポリシーの設定を確認できます。</block>
+  <block id="0a5120b477a12d0b58555a4a46c5269c" category="summary">サポートされないワークフロー</block>
+  <block id="9a2e882799cd282a6f2f040bce700bee" category="paragraph">VMS 1.0リリースのBlueXPのバックアップとリカバリでは、次のワークフローはサポートされません。</block>
+  <block id="10cbe957e96580adb586e243ca93b19f" category="list-text">VMDK を接続および接続解除する</block>
+  <block id="839409625f4f63a1b0569b87b727b253" category="list-text">データストアのマウントとアンマウント</block>
+  <block id="6d74a680eadd149117f584cf67b83c34" category="list-text">ゲストファイルとフォルダをリストアします</block>
+  <block id="e3ce20e84d792df542d9625df767d605" category="list-text">別の場所にリストアします</block>
+  <block id="b3559f665aa2ce07e02e3a58d4dbcc1c" category="list-text">「証明書」認証方式を使用してストレージシステムを追加してください</block>
+  <block id="ec2690fa612571dacaeedc2cc2bb4fb6" category="list-text">NetApp ONTAP FlexGroupボリュームを追加します</block>
+  <block id="e81fe1cc9509490f8ba5ec5636cb754e" category="summary">仮想マシン上のVM、データストア、アプリケーションと整合性のあるデータベースを保護するには、VMに対してBlueXPのバックアップとリカバリを導入する必要があります。</block>
+  <block id="4af3639e7f4fffc8b4fcc219b968cc03" category="doc">BlueXPでVMのバックアップとリカバリを導入</block>
+  <block id="70a3b011bedc6fad937d187700969443" category="paragraph">+++++</block>
+  <block id="8fd291ad60a03fee9a1ee7e664474efb" category="paragraph">OVA環境は、VMware vCenter 8.0以降でサポートされます。</block>
+  <block id="d59a15e753c2787c0b1006e6c681e3d8" category="list-text">導入の要件を確認しておく必要があります。</block>
+  <block id="a9760771f4dac75a237b0b95e23b2804" category="list-text">AWSでサポートされているバージョンのVMCが実行されている必要があります。</block>
+  <block id="b778ffe29ad16f2f9fea1b78e3afde09" category="list-text">VMC on AWS環境の設定とセットアップが完了している必要があります。</block>
+  <block id="af385a0f60b4b8d21fb7da3e73bc1601" category="list-text">VMのBlueXPのバックアップとリカバリ用のESXiホストをセットアップしておく必要があります。</block>
+  <block id="91e9d3a887ef8fe897c7d2db6b95249f" category="list-text">VMのBlueXPバックアップとリカバリをダウンロードしておく必要があります<block ref="58963a595c988dc6f693cb3238dc907a" prefix=" " category="inline-code"></block> ファイル。</block>
+  <block id="95ff0b130af729d4a1d7d76be6a9f1ef" category="list-text">VMC on AWSインスタンスのログイン認証の詳細を確認しておく必要があります。</block>
+  <block id="1ac228dd82997c534998d8c776a81009" category="list-text">有効な公開鍵ファイルと秘密鍵ファイルがある証明書が必要です。詳細については、「ストレージ証明書管理」セクションの記事を参照してください。</block>
+  <block id="78dd2db401a1c567e4094c34da3d53e3" category="list-text">vSphere Clientのすべてのブラウザセッションからログアウトして閉じておく必要があります。また、VMのBlueXPバックアップおよびリカバリの導入時にブラウザキャッシュ問題が発生しないように、ブラウザキャッシュを削除しておく必要があります。</block>
+  <block id="8ba7fa3d7ed705b172a2802a36085538" category="list-text">vCenter で Transport Layer Security （ TLS ）を有効にしておく必要があります。VMware のドキュメントを参照してください。</block>
+  <block id="d706d30254764a674cce32eb658463b4" category="paragraph">vCenterと同じタイムゾーンのVMについては、BlueXPのバックアップとリカバリを導入します。</block>
+  <block id="60fef4f382ecd40d07aa6f5d88accaa7" category="list-text">VMware vCenter 7.0.3以降のバージョンの場合は、「Open Virtual Appliance（OVA）のダウンロード」セクションの手順に従って、証明書をvCenterにインポートします。</block>
+  <block id="9e6343514537d0d6a99bafe616c5aa86" category="list-text">ブラウザから VMware vSphere vCenter にアクセスします。</block>
+  <block id="a5bc2dcdf45e4e981e8c5477447aa605" category="list-text">VMware vCenter Single Sign-Onページにログインします。</block>
+  <block id="ad4893b9eae679e233b663b06f44d8af" category="list-text">Navigator ペインで、データセンター、クラスタ、ホストなどの仮想マシンの有効な親オブジェクトであるインベントリオブジェクトを右クリックし、 * Deploy OVF Template * を選択して VMware Deploy ウィザードを起動します。</block>
+  <block id="17b94924b62d3d2218aa4d42b17aa068" category="list-text">を展開します<block ref="58963a595c988dc6f693cb3238dc907a" prefix=" " category="inline-code"></block> を含むファイル<block ref="8d8b01a4d628953e7a2225813c8edb3f" prefix=" " category="inline-code"></block> ファイルをローカルシステムに保存します。[Select an OVF template]ページで、の場所を指定します<block ref="8d8b01a4d628953e7a2225813c8edb3f" prefix=" " category="inline-code"></block> 内のファイル<block ref="58963a595c988dc6f693cb3238dc907a" prefix=" " category="inline-code"></block> 展開されたフォルダ。</block>
+  <block id="5a378b18f7bf0c4cabc6c655cd2f535e" category="list-text">「 * 次へ * 」をクリックします。</block>
+  <block id="796f03d0e85998488ac1646dc2223f74" category="list-text">[ 名前とフォルダの選択 * ] ページで、 VM または vApp の一意の名前を入力し、導入場所を選択して、 [ 次へ * ] をクリックします。</block>
+  <block id="120eae940d81b5db30f7ab4bb98355e0" category="paragraph">このステップでは、をインポートする場所を指定します<block ref="8d8b01a4d628953e7a2225813c8edb3f" prefix=" " category="inline-code"></block> vCenterにファイルを移動します。VMのデフォルト名は、選択したの名前と同じです<block ref="8d8b01a4d628953e7a2225813c8edb3f" prefix=" " category="inline-code"></block> ファイル。デフォルト名を変更した場合は、各VMC on AWS VMフォルダ内で一意の名前を選択します。</block>
+  <block id="610a764205314eed9d2cb112d7d4fe17" category="paragraph">VM のデフォルトの導入場所は、ウィザードを開始したインベントリオブジェクトです。</block>
+  <block id="fd38bfaa138a173dbe8f06d29d48ca2d" category="list-text">[ リソースの選択 *] ページで、導入した VM テンプレートを実行するリソースを選択し、 [ 次へ *] をクリックします。</block>
+  <block id="e3e1c25431fc2379a565e59898f94d07" category="list-text">[* Review details（レビューの詳細）]ページで、を確認します<block ref="8d8b01a4d628953e7a2225813c8edb3f" prefix=" " category="inline-code"></block> テンプレートの詳細を入力し、[次へ]をクリックします。</block>
+  <block id="636c2e0b88f6a682d77d3838726c2fe8" category="list-text">[ ライセンス契約 * ] ページで、 [ すべてのライセンス契約に同意します ] のチェックボックスをオンにします。 *</block>
+  <block id="703b009db2355e8887ba2886f86ab2ec" category="list-text">［ * ストレージの選択 * ］ ページで、導入した OVF テンプレートのファイルの保存場所と保存方法を定義します。</block>
+  <block id="55cce6bfbb9d17ae1682863fc7a7764b" category="list-text">VMDK のディスク形式を選択します。</block>
+  <block id="7a9c01639c2cc1523a8c14bd0e5ba33f" category="list-text">VM ストレージポリシーを選択します。</block>
+  <block id="a7d21e52dac9a32dd6c0969d21e58f5d" category="paragraph">このオプションは、デスティネーションリソースでストレージポリシーが有効になっている場合にのみ使用できます。</block>
+  <block id="641242495bc9253884a3edaa25cef822" category="list-text">導入した OVA テンプレートを保存するデータストアを選択します。</block>
+  <block id="81deefee239e2e910af613e15d3fa5b0" category="paragraph">構成ファイルと仮想ディスクファイルはデータストアに格納されます。</block>
+  <block id="cf76b59c919d783c77b9e239f7f36a14" category="paragraph">仮想マシンまたは vApp および関連するすべての仮想ディスクファイルを格納できる十分な大きさのデータストアを選択してください。</block>
+  <block id="19a2f9999bcfa76b2522efb93c48ee86" category="list-text">[ ネットワークの選択 *] ページで、次の操作を行います。</block>
+  <block id="ac072e04e003db352f1a51a7bc9b9b18" category="list-text">送信元ネットワークを選択し、宛先ネットワークにマッピングします。</block>
+  <block id="651433d5ff599464dd5066cb3156dbf0" category="paragraph">ソースネットワーク列には、 OVA テンプレートで定義されたすべてのネットワークが表示されます。</block>
+  <block id="990373fb1cc25af464a0001313f19108" category="list-text">[IP Allocation Settings] セクションで、必要な IP プロトコルを選択し、 [*Next] をクリックします。</block>
+  <block id="e46e129eba07eb4b5e649d1e0e8705fe" category="paragraph">BlueXPのVMのバックアップとリカバリでは、1つのネットワークインターフェイスがサポートされます。複数のネットワークアダプタが必要な場合は、手動でセットアップする必要があります。</block>
+  <block id="a3597cfbbc7bac1face6663ca7cee56f" category="list-text">[ テンプレートのカスタマイズ ] ページで、次の操作を行います。</block>
+  <block id="0872cc2ae5ee51207c594d63816e1c49" category="list-text">[* Register to Existing vCenter* （既存の vCenter に登録） ] セクションで、仮想アプライアンスの vCenter 名と vCenter クレデンシャルを入力します。</block>
+  <block id="e83e36675303176d60875dba6e6a988c" category="paragraph">vCenter username *フィールドに、domain\usernameの形式でユーザ名を入力します。</block>
+  <block id="587c874122378eff1aa1b51ab4413eaa" category="list-text">[Create BlueXP backup and recovery for VMs credentials]*セクションで、ローカルクレデンシャルを入力します。</block>
+  <block id="a8b8a57e48b9ffeadf52134384793930" category="paragraph">[*Username*] フィールドに、ローカルユーザ名を入力します。ドメインの詳細は入力しないでください。</block>
+  <block id="84d178a3dbd52098e70956614b4f030b" category="paragraph">指定するユーザ名とパスワードを書き留めます。あとでVMのBlueXPのバックアップとリカバリの設定を変更する場合は、これらのクレデンシャルを使用する必要があります。</block>
+  <block id="61a8dab3f6aedb51e104e8b3324b04ea" category="list-text">maintユーザのクレデンシャルを入力します。</block>
+  <block id="77f6de55ef0f900f6cca67ff3c69430b" category="list-text">[ ネットワークプロパティの設定 *] に、ホスト名を入力します。</block>
+  <block id="3fa10b976d2e272f29933ad742d95ea9" category="list-text">[*IPv4 ネットワークプロパティの設定 *] セクションで、 IPv4 アドレス、 IPv4 ネットマスク、 IPv4 ゲートウェイ、 IPv4 プライマリ DNS 、 IPv4 セカンダリ DNS などのネットワーク情報を入力します。 および IPv4 検索ドメインを使用できます。</block>
+  <block id="7f4ea10911b506f2fd2ecf8e410345db" category="paragraph">ネットワーク構成としてDHCPを使用する場合は、これらの手順を省略し、[Setup Network Properties]セクションのエントリを空白のままにしておくことができます。</block>
+  <block id="71f9ed6b3799a05b8e015c69367cfb37" category="list-text">* Setup Date and Time * で、 vCenter が配置されているタイムゾーンを選択します。</block>
+  <block id="e69d6a911676da089c14c8e8f2935510" category="list-text">[ 完了準備完了 ] ページでページを確認し、 [ 完了 ] をクリックします。</block>
+  <block id="e60fd866a673df28143ec78f1ec5e5c6" category="paragraph">すべてのホストに IP アドレスが設定されている必要があります（ FQDN ホスト名はサポートされません）。展開操作では、展開前に入力が検証されません。</block>
+  <block id="76785e5d8d7ceebbb25a3306d19d777e" category="paragraph">OVF のインポートおよび導入タスクが完了するまでの間、 Recent Tasks ウィンドウで導入の進捗状況を確認できます。</block>
+  <block id="dfb68bf37d310949aa0dd64d78a8d9dc" category="paragraph">BlueXPのVMのバックアップとリカバリの導入が完了すると、Linux VMとして導入されてvCenterに登録され、VMware vSphere Clientがインストールされます。</block>
+  <block id="8e12e468dd8f437d0dc73169b5256571" category="list-text">BlueXPのVMのバックアップとリカバリを導入したVMに移動し、*[概要]*タブをクリックし、*[電源をオン]*ボックスをクリックして仮想アプライアンスを起動します。</block>
+  <block id="463df4afa807689644efac592f3dfbe4" category="list-text">VMのBlueXPバックアップ/リカバリの起動中に、導入したBlueXPのVMバックアップ/リカバリを右クリックし、*[ゲストOS ]*を選択して*[VMwareツールのインストール]*をクリックします。</block>
+  <block id="30d965eef5ba25c6b9998ae38270b43e" category="doc">法的通知</block>
+  <block id="e9c44bbfd795a5d63d74c6a77afee70d" category="paragraph">著作権に関する声明、商標、特許などにアクセスできます。</block>
+  <block id="6016a2b341113bf496b719905398ecd2" category="section-title">著作権</block>
+  <block id="09e95b77ffe81fe465a83ba99efad5c8" category="paragraph"><block ref="09e95b77ffe81fe465a83ba99efad5c8" category="inline-link-rx"></block></block>
+  <block id="126a02652da6de02962cf1b654fd6376" category="section-title">商標</block>
+  <block id="c4ce4761e466527d26b3e3d5ed1006fd" category="paragraph">NetApp 、 NetApp のロゴ、および NetApp の商標ページに記載されているマークは、 NetApp, Inc. の商標です。その他の会社名および製品名は、それぞれの所有者の商標である場合があります。</block>
+  <block id="7aa531e9acfe2b98e34d2c92fe9846ff" category="paragraph"><block ref="7aa531e9acfe2b98e34d2c92fe9846ff" category="inline-link-rx"></block></block>
+  <block id="be89498d2f8a22ce47c02ba9795fe2af" category="section-title">特許</block>
+  <block id="d0b19d36be2c5f16e9aef46c8a452d3d" category="paragraph">ネットアップが所有する特許の最新リストは、次のサイトで入手できます。</block>
+  <block id="d7f1fbcf9ce4e42f705add574d262b2c" category="paragraph"><block ref="d7f1fbcf9ce4e42f705add574d262b2c" category="inline-link-rx"></block></block>
+  <block id="56c34c6410dd45c5cec44149ad0ce037" category="section-title">プライバシーポリシー</block>
+  <block id="fc248f74f5e36542f7f5627b8610e9a3" category="paragraph"><block ref="fc248f74f5e36542f7f5627b8610e9a3" category="inline-link-rx"></block></block>
+  <block id="c0227cef6f07a8cd2ac72f2945b031aa" category="section-title">オープンソース</block>
+  <block id="9b73989307c1975dfa4d5e1581e4afe8" category="paragraph">通知ファイルには、ネットアップソフトウェアで使用されるサードパーティの著作権およびライセンスに関する情報が記載されています。</block>
+  <block id="1dbd69173905cff968e81a32823f8f1e" category="summary">バックアップ処理は、リソースグループに定義されているすべてのリソースを対象に実行されます。リソースグループにポリシーが適用され、かつスケジュールが設定されている場合は、スケジュールに従って自動的にバックアップが実行されます。</block>
+  <block id="78d2a696f9b9f71eb637f30f0020bdbf" category="doc">リソースグループをオンデマンドでバックアップする</block>
+  <block id="92ae04a417b2b1bf95cb914953f21cce" category="list-text">ポリシーを適用したリソースグループを作成しておく必要があります。</block>
+  <block id="409609f378546af0c017cd18ffb05b2c" category="paragraph">VM MySQLデータベースのBlueXPのバックアップとリカバリをバックアップするジョブがすでに実行されているときは、オンデマンドバックアップジョブを開始しないでください。メンテナンスコンソールを使用して、 MySQL データベースに設定されているバックアップスケジュールを確認します。</block>
+  <block id="8df70f643740e0e6be25c9e73f9347ae" category="list-text">vCenter Web Clientのページの左側ナビゲータペインで、メニュー：BlueXP backup and recovery for VMs [Resource Groups]をクリックし、リソースグループを選択し、*[Run Now]*をクリックしてバックアップを開始します。</block>
+  <block id="d88005c65b58055629310a63a4557fca" category="paragraph"><block ref="d88005c65b58055629310a63a4557fca" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="dee1b58674283aa778714d7ecc9e0d92" category="list-text">リソースグループに複数のポリシーが設定されている場合は、[今すぐバックアップ]ダイアログボックスで、このバックアップ処理に使用するポリシーを選択します。</block>
+  <block id="bb7ace492245c1393f1fa7650b5650f0" category="list-text">[OK] をクリックして、バックアップを開始します。</block>
+  <block id="634fce580f751c41e854d8f1772f2396" category="list-text">バックアップ内のいずれかの仮想マシンで休止処理に失敗すると、バックアップは警告とともに完了し、選択したポリシーで[Virtual Machine consistency]が選択されていても、[Not Virtual Machine consistent]とマークされます。この場合、一部の仮想マシンが正常に休止された可能性があります。ジョブモニタでは、障害が発生した仮想マシンの詳細に休止が失敗したと表示されます。</block>
+  <block id="3e40b4a74f48e508b0fa469b70fe41b2" category="summary">リソースグループは、保護する仮想マシンとデータストアのコンテナです。</block>
+  <block id="020a36deb114af1bb518c70d5975e940" category="doc">リソースグループを作成する</block>
+  <block id="74c107d9bc0e07de1820c4ccac80a5bf" category="paragraph">すべてのリソースグループについて、アクセスできない状態の仮想マシンを追加しないでください。アクセスできない仮想マシンを含むリソースグループを作成することは可能ですが、そのリソースグループのバックアップは失敗します。</block>
+  <block id="9cce6f26b63d9eb5d76faeab404389aa" category="paragraph">リソースグループに対しては、いつでもリソースを追加または削除できます。</block>
+  <block id="52fb0b971147f2d50f41f8affa7cbf5e" category="list-text">単一リソースのバックアップ</block>
+  <block id="05ef45af9b0644fd461b58511351eb5e" category="paragraph">単一のリソース（単一の仮想マシンなど）をバックアップするには、その単一のリソースを含むリソースグループを作成する必要があります。</block>
+  <block id="b23ab74a5da8a9fa670a771dd846d06e" category="list-text">複数のリソースのバックアップ</block>
+  <block id="67a4acd21e837a9ee8a39c0bb84101d1" category="paragraph">複数のリソースをバックアップするには、複数のリソースを含むリソースグループを作成する必要があります。</block>
+  <block id="a5fc7fce0f281a94273520624de03c38" category="list-text">Snapshot コピーの最適化</block>
+  <block id="b861f2c51917fb8a88656ddcb6fd1ca4" category="paragraph">Snapshotコピーを最適化するには、同じボリュームに関連付けられた仮想マシンとデータストアを1つのリソースグループにグループ化します。</block>
+  <block id="9f02509e5496e861df4c341dba05386e" category="list-text">バックアップポリシー</block>
+  <block id="ab4c9d1e2eb92442c5b3ece6aa2c0278" category="paragraph">リソースグループはバックアップポリシーがなくても作成できますが、スケジュールされたデータ保護処理を実行するには、少なくとも 1 つのポリシーがリソースグループに適用されている必要があります。既存のポリシーを使用することも、リソースグループの作成時に新しいポリシーを作成することもできます。</block>
+  <block id="4360fc5d869bf831be60cbb2a380170e" category="list-text">互換性チェック</block>
+  <block id="f99994df955a095a325d081acb02d60a" category="paragraph">リソースグループの作成時に、VMのBlueXPバックアップ/リカバリで互換性チェックが実行されます。非互換性の理由は次のとおりです。</block>
+  <block id="07996c2123551c418aad1f80ac1278e7" category="list-text">VMDKがサポート対象外のストレージにあります。</block>
+  <block id="f3c698429326d1c3e24ca05da7a4c5da" category="list-text">共有PCIデバイスが仮想マシンに接続されている。</block>
+  <block id="77ec02d8115ae8f8baf51a69ba3e38e2" category="list-text">BlueXPのVMのバックアップとリカバリの左側にあるナビゲーションペインで、*[リソースグループ]*をクリックします。</block>
+  <block id="bef331d16c5d9ba4f0a20c154762ab39" category="list-text">[リソースグループ]ページで、*[作成]*をクリックしてウィザードを開始します。</block>
+  <block id="fb588da7b4a1c9d0902343b377823fdc" category="paragraph"><block ref="fb588da7b4a1c9d0902343b377823fdc" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="cdff6161a900ecd68dd60624c62896af" category="paragraph">リソースグループを作成するには、この方法が最も簡単です。ただし、次のいずれかを実行して、 1 つのリソースで構成されるリソースグループを作成することもできます。</block>
+  <block id="70fab5d9a0c00a6355f6fe5d96929ee9" category="list-text">1つの仮想マシンのリソースグループを作成するには、[メニュー][メニュー][ホストおよびクラスタ]をクリックし、仮想マシンを右クリックして、[BlueXP][仮想マシンのバックアップとリカバリ]を選択し、*[作成]*をクリックします。</block>
+  <block id="6659300612a814c55e5e4a0ab3381c7a" category="list-text">1つのデータストアのリソースグループを作成するには、[メニュー][メニュー][ホストおよびクラスタ]をクリックし、データストアを右クリックして[BlueXP][ VMのバックアップとリカバリ]を選択し、*[作成]*をクリックします。</block>
+  <block id="f1410de57632101f52f16d7d6c306025" category="list-text">ウィザードの*[一般情報と通知]*ページで、必要な値を入力します。</block>
+  <block id="2b2620f1962d78eb23f6f754d96e6546" category="list-text">[* リソース *] ページで、次の操作を実行します。</block>
+  <block id="5d113f2038d289f391614c39043629e8" category="paragraph">適用範囲</block>
+  <block id="ddc3f02ab84de97f0abdafefdb87394f" category="paragraph">保護するリソースのタイプを選択します。</block>
+  <block id="eff845e03ea7f765e5646b3de0aa3188" category="list-text">データストア</block>
+  <block id="76b0fa668c1cd016096eb9bc1bfde44a" category="list-text">仮想マシン</block>
+  <block id="615707baa418ce315e44ac2a5d6164af" category="paragraph">データセンター</block>
+  <block id="94936dc19126e0203fd5c47b7e05428b" category="paragraph">[Virtual Machines]または[datastores]に移動します</block>
+  <block id="4c928d1c171b7d62d8f758ffa689710f" category="paragraph">使用可能なエンティティ</block>
+  <block id="9b8a9a84d677934089901b3496c6b38f" category="paragraph">保護するリソースを選択し、[&gt;]をクリックして選択したエンティティのリストに移動します</block>
+  <block id="c4d7d69f23fe0a7e621b08dfa824512e" category="paragraph">[次へ]*をクリックすると、BlueXPのバックアップとリカバリの管理対象が、選択したリソースが配置されているストレージと互換性があるかどうかが最初にチェックされます。</block>
+  <block id="3242a164ddcaa9a72988c3af2bc007f4" category="paragraph">「Selected &lt;resource-name&gt; is not BlueXP backup and recovery for VMs compatible」というメッセージが表示される場合は、選択したリソースがBlueXPのVMのバックアップおよびリカバリに対応していません。</block>
+  <block id="62307e34d22f9c73f798fb198882b14e" category="list-text">[スパニングディスク]ページで、複数のデータストアにまたがる複数のVMDKを持つ仮想マシンのオプションを選択します。</block>
+  <block id="fe83ca3448603607d6f63f28881e4f36" category="list-text">すべてのスパニングデータストアを常に除外する [ データストアのデフォルトです。 ]</block>
+  <block id="aa41470a97a21d65eb54e46243538102" category="list-text">Always include all spanning datastores（仮想マシンのデフォルト）</block>
+  <block id="75742d049e48e4760129323eb0e54d8d" category="list-text">含めるスパニングデータストアを手動で選択します。</block>
+  <block id="3210952a5fb8d5ccfeba07ae678f1775" category="list-text">[* Policies] ページで、次の表に示すように 1 つ以上のバックアップポリシーを選択または作成します。</block>
+  <block id="2cdd19659310fc48844c26aedc8fd9a4" category="cell">を使用するには ...</block>
+  <block id="6059ad69090f1a7b85ee31e84e827f9c" category="paragraph">既存のポリシー</block>
+  <block id="5e8922fe6b33e53144f78b8592674a6c" category="paragraph">リストから 1 つ以上のポリシーを選択します。</block>
+  <block id="9c5b7358395094126cc2831e0ded69a9" category="paragraph">新しいポリシー</block>
+  <block id="f2a42a68e067e481d094b018459ef895" category="list-text">[ 作成（ Create ） ] をクリックします。</block>
+  <block id="fd9ca72572d4ab5e600c85b32f8a9e6a" category="list-text">新しいバックアップポリシーの作成ウィザードに戻るには、新しいバックアップポリシーの作成ウィザードを完了します。</block>
+  <block id="5049311e411f306df5ef01765b9dc8ec" category="list-text">[* Schedules* ] ページで、選択した各ポリシーのバックアップスケジュールを設定します。</block>
+  <block id="d1bdd68846c0836400eff9ed1186b9d5" category="paragraph">開始時間フィールドに、 0 以外の日時を入力します。日付は、日/月/年の形式で指定する必要があります。各フィールドに入力する必要があります。VMのBlueXPのバックアップとリカバリでは、BlueXPのVMのバックアップとリカバリを導入するタイムゾーンでスケジュールが作成されます。タイムゾーンは、BlueXPのVMのバックアップとリカバリのGUIを使用して変更できます。</block>
+  <block id="c2e579bbd89fc3c371008f0c4ea04967" category="paragraph"><block ref="c2e579bbd89fc3c371008f0c4ea04967" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="e35e0852d8b258c1262911fcef9235fc" category="list-text">概要*を確認し、*[終了]*をクリックします。</block>
+  <block id="e0537e9cf2e3b46fd54c91b2d3951630" category="paragraph">[Finish]をクリックする前に、ウィザードの任意のページに戻って情報を変更できます。</block>
+  <block id="5c8ec5161ac5fb9e56619ce4ca7f6562" category="paragraph">[Finish]をクリックすると、新しいリソースグループがリソースグループのリストに追加されます。</block>
+  <block id="08105970723024c1f3e2f1785730db79" category="paragraph">バックアップ内のいずれかの仮想マシンで休止処理に失敗した場合、選択したポリシーで[Virtual Machine consistency]が選択されていても、バックアップは[Not Virtual Machine consistent]とマークされます。この場合、一部の仮想マシンが正常に休止された可能性があります。</block>
+  <block id="f23ad563b3074aecc0e703cc5f05f6d3" category="summary">VMに対してBlueXPのバックアップとリカバリを使用する前に、いくつかの要件と考慮事項について理解しておく必要があります。</block>
+  <block id="e7d709a415f457e468d93ff7beb8afbf" category="doc">要件および考慮事項</block>
+  <block id="5769193b786669c0ecafc3e705154789" category="paragraph">VMに対してBlueXPのバックアップとリカバリを使用する前に、いくつかの要件と考慮事項について理解しておく必要があります。</block>
+  <block id="b4b679d794e454844cd086d373906115" category="list-text">BlueXPのVMのバックアップとリカバリは、プラグインを使用してWindowsシステムとLinuxシステムのどちらのデータを保護するかに関係なく、Linux VMとして導入されます。</block>
+  <block id="0e462b074c170de3b3638ac2ed1afb3f" category="list-text">AWSのVMCにあるVMには、BlueXPのバックアップとリカバリを導入する必要があります。</block>
+  <block id="ec89438f95afaf1236c073e8089c548e" category="paragraph">VMとVMCのBlueXPバックアップ/リカバリでは、同じタイムゾーンを使用する必要があります。バックアップスケジュールは、BlueXPのVMのバックアップとリカバリが導入されているタイムゾーンで実行されます。VMCは、VMCが配置されているタイムゾーンのデータを報告します。そのため、VMとVMCのBlueXPのバックアップとリカバリが異なるタイムゾーンにある場合は、BlueXPのBackup and Recovery for VMs Dashboardのデータがレポートのデータと同じにならないことがあります。</block>
+  <block id="195abd4b75057ce435ca652cb45c2a64" category="list-text">名前に特殊文字を含むフォルダにVMのBlueXPバックアップおよびリカバリを導入することはできません。</block>
+  <block id="a7c99fa4270e567a328e88618380eaa4" category="paragraph">フォルダ名には、 $ ！ @ # % ^ &amp; （） _ + ｛ ｝ ' ；、 * ？ " &lt;&gt; | という特殊文字は使用できません</block>
+  <block id="2b70ce4cce0a6dc6a541ed9c851d419c" category="list-text">AWS上のVMCごとに、VM用のBlueXPバックアップ/リカバリのインスタンスを個別に導入して登録する必要があります。</block>
+  <block id="8ced16f68a9710f544fa07b75b031531" category="list-text">AWS上の各VMCを、VM用のBlueXP Backup and Recoveryの個別のインスタンスとペアリングする必要があります。</block>
+  <block id="a0b8712c405e33c495bcbf0f2430f84e" category="list-text">VMのBlueXPのバックアップとリカバリの各インスタンスを個別のLinux VMとして導入する必要があります。</block>
+  <block id="25950cd6c2e7c3d5805a7155cfa39e2a" category="paragraph">たとえば、AWSのVMCの6つの異なるインスタンスからバックアップを実行する場合は、6つのホストにVMインスタンスのBlueXPバックアップ/リカバリを6つ導入し、AWSの各VMCをVMのBlueXPバックアップ/リカバリの固有のインスタンスとペアにする必要があります。</block>
+  <block id="2aa21a5ffa0dab32f9fd25622fcf534d" category="summary">BlueXPのVM向けバックアップ/リカバリは、VMware Cloud on AWSおよびAmazon FSx for NetApp ONTAP上のVMとデータストアにデータ保護サービスを提供するスタンドアロン仮想アプライアンス（オープン仮想アプライアンス形式）です。BlueXPのVMのバックアップとリカバリを使用して、データストアをバックアップしたり、仮想マシンを元の場所にリストアしたりできます。</block>
+  <block id="26a15d7986f1607a9f7daa4efd926c80" category="doc">Amazon FSx上の仮想マシン向けBlueXPバックアップ/リカバリ</block>
+  <block id="f5eab3d317d6c4d95063c4bb5c161509" category="list-text">Amazon FSxでバックアップできるのはNFSタイプのデータストアのみです。</block>
+  <block id="2efffbafe41056b8a16eaa739e9b56e7" category="list-text">NFSデータストアをバックアップするには、ONTAP 9.10以降を実行している必要があります。</block>
+  <block id="32b36f1d8e8c3d59e6463ae39985c79f" category="list-text">VMware Cloudには、事前定義された「CloudAdmin」ロールが用意されています。CloudAdminロールには、SDDCワークロードと、ストレージポリシー、コンテンツライブラリ、vSphereタグ、リソースプールなどの関連オブジェクトを作成および管理するために必要な権限があります。</block>
+  <block id="94cc43cd13438a1a44297fe4d9e5a397" category="list-text">VMとVMDKを現在の場所にリストアできます（In Placeリストア）。</block>
+  <block id="243263104c829e77835d632f591230d5" category="summary">ネットアップテクニカルサポートでサポートケースをオープンするには、まずNetApp Support Site アカウントをBlueXPに追加し、サポートに登録する必要があります。</block>
+  <block id="42748df9eaa0be17ddc5cc1593cf57ab" category="doc">サポートに登録します</block>
+  <block id="0c7db2bd63c891adb2c0fa4527805d72" category="paragraph">BlueXPアカウントと個 々 のCloud Volumes ONTAPシステムにサポートを登録する必要があります。</block>
+  <block id="0b0e252af8897fbe981ec6682d2aa33b" category="section-title">サポート登録の概要</block>
+  <block id="192054ad7601240a3e8be54cc5cc548e" category="paragraph">サポート資格を有効にする登録には、次の2つの形式があります。</block>
+  <block id="2322ca552c2b0ebe090c8485519246a8" category="list-text">BlueXPアカウントIDサポートサブスクリプションの登録(BlueXPの[サポートリソース]ページにある20桁の960xxxxxxxxxシリアル番号)。</block>
+  <block id="23fdcbefa6d9cd877be7ceb7a18bb936" category="paragraph">これは、BlueXP内のすべてのサービスのシングルサポートサブスクリプションIDとして機能します。各BlueXPアカウントレベルのサポート契約が登録されている必要があります。</block>
+  <block id="55ff64467cd508971910145ab5d6b3b8" category="list-text">クラウドプロバイダのマーケットプレイスでのサブスクリプションに関連付けられているCloud Volumes ONTAP のシリアル番号を登録している（909201xxxxxxxxのシリアル番号）。</block>
+  <block id="67dbdeb11e22ea7def810bade59ce818" category="paragraph">これらのシリアル番号は、通常PAY_GOシリアル番号と呼ばれ、Cloud Volumes ONTAP の導入時にBlueXPによって生成されます。</block>
+  <block id="28164bf9e881ddc9e7ff74744bfce180" category="paragraph">両方のタイプのシリアル番号を登録することで、サポートチケットのオープンやケースの自動生成などの機能を利用できます。登録を完了するには、以下の手順でNetApp Support Site（NSS）アカウントをBlueXPに追加してください。</block>
+  <block id="0375f4855be072c7d856a0233cc21de9" category="section-title">クラウドプロバイダソリューションのサポート</block>
+  <block id="e922b9aa0836a1d93e11cac0fe4c9004" category="paragraph">以下のクラウドプロバイダソリューションに関するテクニカルサポートについては、その製品のBlueXPドキュメントの「困ったときは」を参照してください。</block>
+  <block id="18cf072964a583150dd247485ba75b92" category="inline-link-macro">ONTAP 対応の Amazon FSX</block>
+  <block id="9d06990508d25d367d9158c6558eb9c8" category="list-text"><block ref="9d06990508d25d367d9158c6558eb9c8" category="inline-link-macro-rx"></block></block>
+  <block id="7450cfde7058dc5e1f7909d0280fd7ae" category="inline-link-macro">Azure NetApp Files の特長</block>
+  <block id="2e0c742f4616eb27b5b7646aa790edfe" category="list-text"><block ref="2e0c742f4616eb27b5b7646aa790edfe" category="inline-link-macro-rx"></block></block>
+  <block id="b0cee72642f5457a71ddd0b49efb6d93" category="inline-link-macro">Cloud Volumes Service for Google Cloud</block>
+  <block id="cf14bff66a8b72d3675db8ffe0f02ee3" category="list-text"><block ref="cf14bff66a8b72d3675db8ffe0f02ee3" category="inline-link-macro-rx"></block></block>
+  <block id="5a19febf1dcb23c10e8dcfde64ba764c" category="section-title">NetAppサポートにBlueXPアカウントを登録します</block>
+  <block id="6bbc2ba432f59ab65ee3d8ac5a58336e" category="paragraph">サポートに登録してサポート利用資格をアクティブ化するには、BlueXPアカウントの1人のユーザがNetApp Support SiteアカウントをBlueXPログインに関連付ける必要があります。ネットアップサポートへの登録方法は、NetApp Support Site （NSS）アカウントがあるかどうかによって異なります。</block>
+  <block id="bf4c731c0ee7f60c8018ad8f96828dda" category="section-title">NSSアカウントをお持ちの既存のお客様</block>
+  <block id="7e177185e7eddff33dd8f3aeb7551132" category="paragraph">NSSアカウントをお持ちのネットアップのお客様は、BlueXPからサポートに登録するだけで済みます。</block>
+  <block id="b019ab068deba8494415cbd226ca0c4e" category="list-text">BlueXPコンソールの右上にある[設定]アイコンをクリックし、[資格情報*]を選択します。</block>
+  <block id="41e1e3cff4a07ce2ecc08e6c09f11092" category="list-text">[ユーザクレデンシャル]*をクリックします。</block>
+  <block id="0c788a722f31f8f0cf36539ee04615cf" category="list-text">[NSSクレデンシャルの追加]*を選択し、NetApp Support Site（NSS）認証プロンプトに従います。</block>
+  <block id="8c916e828e9e5a3592c8cac4e25928be" category="list-text">登録プロセスが正常に完了したことを確認するには、[ヘルプ]アイコンをクリックし、*[サポート]*を選択します。</block>
+  <block id="8add4eb0d3f6ce61d374f3df3ee4eadf" category="paragraph">[リソース]ページに、アカウントがサポートに登録されていることが表示されます。</block>
+  <block id="10c56875db7a47f791d653e5d5bff0e9" category="inline-image-macro">アカウントのシリアル番号、緑のチェックボックス、サポート登録済みのテキストを示すスクリーンショット。</block>
+  <block id="3d183819a15163ef2e2e7d9d764254a9" category="paragraph"><block ref="3d183819a15163ef2e2e7d9d764254a9" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="d9a01bdcfab6f0a10fc126999b4d5988" category="paragraph">他のBlueXPユーザにNetApp Support Siteアカウントが関連付けられていない場合、このサポート登録ステータスは表示されません。ただし、BlueXPアカウントがサポートに登録されていないわけではありません。アカウント内の1人のユーザーがこれらの手順を実行している限り、アカウントは登録されています。</block>
+  <block id="1ff5aefce774ec72a211f2b3bb10b950" category="section-title">NSSアカウントを持たない既存のお客様</block>
+  <block id="bdd862f49d428a850400bcf2f53cdaf2" category="paragraph">NetAppの既存のお客様で、ライセンスとシリアル番号は_NO_NSSアカウントしかお持ちでない場合は、NSSアカウントを作成してBlueXPログインに関連付ける必要があります。</block>
+  <block id="5b2b7f628f804bcb786a097c7e45aa41" category="inline-link">NetApp Support Site ユーザー登録フォーム</block>
+  <block id="0c4a8b62da9473fbd5401273c4f85ee0" category="list-text">を実行してNetApp Support Site アカウントを作成します<block ref="041bcb6d9bdf91f7d6ac92ae3a196e12" category="inline-link-rx"></block></block>
+  <block id="d61c9f72493817776f392db42ac446a2" category="list-text">適切なユーザレベルを選択してください。通常は*ネットアップのお客様/エンドユーザ*がこれに該当します。</block>
+  <block id="5226d4ec1f4f81b740cbbd27635b441f" category="list-text">必ず、上記のシリアル番号フィールドに使用されているBlueXPアカウントのシリアル番号(960xxxx)をコピーしてください。これにより、アカウント処理が高速化されます。</block>
+  <block id="0499bba105f8a891a2c671f1ba99dd34" category="list-text">の手順を実行して、新しいNSSアカウントをBlueXPログインに関連付けます <block ref="2f3aba04ec49ee5f0573a6c80a1b9df2" category="inline-xref-macro-rx"></block>。</block>
+  <block id="e9b1f53d6cabb3394833a4e102eb6a69" category="section-title">ネットアップのソリューションを初めて導入する場合は</block>
+  <block id="c20c107d0d4eef6351660f3590324232" category="paragraph">ネットアップ製品を初めてご利用になり、NSSアカウントをお持ちでない場合は、以下の手順に従ってください。</block>
+  <block id="1afe19576f77bb0073c93359ed2cbb18" category="list-text">BlueXPコンソールの右上にある[ヘルプ]アイコンをクリックし、[*Support*]を選択します。</block>
+  <block id="b50f0a46135bcb7083b1f2f82032fc26" category="inline-image-macro">[ ヘルプ ] メニューのスクリーンショット。サポートは最初に表示されるオプションです</block>
+  <block id="e8d4092baef6680c6a35d5228ae31de2" category="paragraph"><block ref="e8d4092baef6680c6a35d5228ae31de2" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="2974170a8b1b5b4a2ac69aacd4c1c9c3" category="list-text">サポート登録ページでアカウントIDのシリアル番号を確認します。</block>
+  <block id="379f9cd57d97013f3f7fdd24f692a0b1" category="paragraph"><block ref="379f9cd57d97013f3f7fdd24f692a0b1" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="dd50e314c18933734174c1156dd9237f" category="inline-link">ネットアップサポート登録サイト</block>
+  <block id="78f94e749b89d69dcbf3baff21ccb958" category="list-text">に移動します<block ref="e1c4be66250fd76d5c52bfe2cb7daee2" category="inline-link-rx"></block> 「*ネットアップ登録のお客様ではありません*」を選択します。</block>
+  <block id="d4f633ef130727b2776fa7f45024ca7d" category="list-text">必須フィールドに入力します（赤いアスタリスクのフィールド）。</block>
+  <block id="1128fc8d5ec64880f4d49337ed798d31" category="list-text">[*製品ライン*（Product Line *）]フィールドで、[* Cloud Manager *]を選択し、該当する課金プロバイダーを選択します。</block>
+  <block id="50a1dc01b7312307c34a888071586955" category="list-text">上記の手順2からアカウントのシリアル番号をコピーし、セキュリティチェックを完了して、ネットアップのグローバルデータプライバシーポリシーを確認します。</block>
+  <block id="3a24c87c9971d2011b4df223718f84b4" category="paragraph">この安全なトランザクションを完了するために、メールボックスに電子メールがすぐに送信されます。確認メールが数分で届かない場合は、必ずスパムフォルダを確認してください。</block>
+  <block id="03413baeca1ff7222737d8ce299bd4e8" category="list-text">Eメールからアクションを確認します。</block>
+  <block id="201080500e946070a2e4873042507c77" category="paragraph">確認ではネットアップにリクエストが送信され、NetApp Support Site アカウントを作成することを推奨します。</block>
+  <block id="cc8b0535948da368f832027c19b7f853" category="list-text">シリアル番号フィールドには、上記のアカウントのシリアル番号（960xxxx）を必ずコピーしてください。これにより、アカウント処理が高速化されます。</block>
+  <block id="bd965e38a0c9cf27aa1bde099308e23f" category="paragraph-title">完了後</block>
+  <block id="684375e279a289295b72a006d93e2c4c" category="paragraph">このプロセスについては、ネットアップからご連絡ください。これは、新規ユーザ向けの1回限りのオンボーディング演習です。</block>
+  <block id="5cdee814e2d9ba3490a8f16d00c65759" category="paragraph">NetApp Support Siteアカウントを作成したら、の手順を実行してアカウントをBlueXPログインに関連付けます <block ref="2f3aba04ec49ee5f0573a6c80a1b9df2" category="inline-xref-macro-rx"></block>。</block>
+  <block id="3e616bae81890a6c8fae17c9b45af152" category="section-title">Cloud Volumes ONTAPサポートのためにNSSクレデンシャルを関連付けます</block>
+  <block id="d8f0da67cbab6e43f6d266bdab68cdc8" category="paragraph">NetApp Support Siteで次の主要なワークフローを有効にするには、BlueXPアカウントにクレデンシャルを関連付ける必要がCloud Volumes ONTAPあります。</block>
+  <block id="a0518a10626dc11fd00e2d20265ad240" category="list-text">従量課金制のCloud Volumes ONTAPシステムのサポートを登録しています</block>
+  <block id="321aadf78ef73521712291b7aba6411f" category="paragraph">お使いのシステムのサポートを有効にし、ネットアップのテクニカルサポートリソースにアクセスするには、 NSS アカウントを用意する必要があります。</block>
+  <block id="d51b2b497db445a16b1c9583c1abbb59" category="list-text">お客様所有のライセンスを使用（BYOL）する場合のCloud Volumes ONTAP の導入</block>
+  <block id="2ebfeabed40c2270d9fa8325080a4b3e" category="paragraph">ライセンスキーをBlueXPでアップロードし、購入した契約期間のサブスクリプションを有効にするには、NSSアカウントを提供する必要があります。これには、期間の更新の自動更新も含まれます。</block>
+  <block id="f5135b68b75a8404803a1eb438e40c5e" category="list-text">Cloud Volumes ONTAP ソフトウェアを最新リリースにアップグレードしています</block>
+  <block id="39f382b97080640c75604b5890f3a5d3" category="paragraph">NSSクレデンシャルをBlueXPアカウントに関連付ける方法は、BlueXPユーザログインに関連付けられたNSSアカウントとは異なります。</block>
+  <block id="e3bc6d35311568d55f1c8ea11984b964" category="paragraph">これらのNSSクレデンシャルは、特定のBlueXPアカウントIDに関連付けられています。BlueXPアカウントに属するユーザは、*[サポート]&gt;[NSS管理]*からこれらのクレデンシャルにアクセスできます。</block>
+  <block id="328a2c1e7778e9edaf79d90c51409ac4" category="list-text">お客様レベルのアカウントをお持ちの場合は、1つ以上のNSSアカウントを追加することもできます。</block>
+  <block id="e3cd99e4aa330ae6bdfb3754d83ae962" category="list-text">パートナーアカウントまたはリセラーアカウントをお持ちの場合は、1つ以上のNSSアカウントを追加することはできますが、お客様レベルのアカウントと一緒に追加することはできません。</block>
+  <block id="d17d6b5dafebab6b7659da8850737e70" category="list-text">[*NSS Management] &gt; [Add NSS Account*] をクリックします。</block>
+  <block id="8aaf101e623c543c7eef3c65f6233366" category="list-text">メッセージが表示されたら、 [* Continue （続行） ] をクリックして Microsoft ログインページにリダイレクトします。</block>
+  <block id="19d089db572ee6a1e154a0c9c9e57bfd" category="paragraph">ネットアップは、サポートとライセンスに固有の認証サービスのアイデンティティプロバイダとして Microsoft Azure Active Directory を使用しています。</block>
+  <block id="465ec6d5eafa3524c948c99d8bfcd306" category="list-text">ログインページで、NetApp Support Siteの登録 E メールアドレスとパスワードを入力して認証プロセスを実行します。</block>
+  <block id="cbc6cc3bb022583403171b447b2a962c" category="paragraph">これらのアクションにより、BlueXPはライセンスのダウンロード、ソフトウェアのアップグレード検証、および将来のサポート登録などの目的でNSSアカウントを使用できます。</block>
+  <block id="cf3a2d2c139bf5c9cc87fe714bfff3b1" category="paragraph">次の点に注意してください。</block>
+  <block id="ec084bb25ed5b934c09b361069c246b2" category="list-text">NSSアカウントは、お客様レベルのアカウントである必要があります（ゲストアカウントや一時アカウントではありません）。複数のお客様レベルのNSSアカウントを設定できます。</block>
+  <block id="27387009488fe78dcc7cb7e3e432792f" category="list-text">NSSアカウントがパートナーレベルのアカウントの場合、作成できるNSSアカウントは1つだけです。お客様レベルのNSSアカウントを追加しようとすると、パートナーレベルのアカウントが存在する場合は、次のエラーメッセージが表示されます。</block>
+  <block id="d926847e4634e19a1aa7358becc0fa27" category="paragraph">「別のタイプのNSSユーザーがすでに存在するため、このアカウントではNSS顧客タイプは許可されていません。」</block>
+  <block id="a04a3a5322782e8c18d0d64be7e1ccbc" category="paragraph">既存のお客様レベルのNSSアカウントがあり、パートナーレベルのアカウントを追加しようとする場合も同様です。</block>
+  <block id="1afe8a81cfddc9fa9559e272bb6b9496" category="list-text">ログインに成功すると、ネットアップはNSSのユーザ名を保存します。</block>
+  <block id="1dcb63fd55c4d22e87cb32275b8cc808" category="inline-image-macro">3つの水平ドットのアイコン</block>
+  <block id="0dfcbbbe02d3e96f8ad78782e8772587" category="paragraph">これはシステムによって生成されたIDで、電子メールにマッピングされます。[*NSS Management*]ページで、から電子メールを表示できます <block ref="5151db0ded96d46f40ae09b5e5b167a1" category="inline-image-macro-rx" type="image"></block> メニュー。</block>
+  <block id="fc79de85a483938f72fbcb9822ec0ae3" category="list-text">ログイン認証情報トークンを更新する必要がある場合は、の[認証情報の更新*]オプションも使用できます <block ref="5151db0ded96d46f40ae09b5e5b167a1" category="inline-image-macro-rx" type="image"></block> メニュー。</block>
+  <block id="b14d512a3c64fb5df16f6721b0603c63" category="paragraph">このオプションを使用すると、再度ログインするように求められます。これらのアカウントのトークンは90日後に期限切れになります。このことを通知する通知が投稿されます。</block>
+  <block id="c9df4195a305212ffd7b56d24f67129d" category="summary">ネットアップでは、さまざまな方法でBlueXPをサポートしています。ナレッジベース（ KB ）記事やコミュニティフォーラムなど、 24 時間 365 日利用可能な幅広いセルフサポートオプションをご用意しています。サポート登録には、 Web チケット処理によるリモートテクニカルサポートが含まれます。</block>
+  <block id="fabfc25ef8996fd90836e58a4c0b26b6" category="doc">ヘルプを表示します</block>
+  <block id="7c5661ab6b39ee901cea00a6e7020a49" category="paragraph">ネットアップでは、BlueXPとその クラウド サービス をさまざまな方法でサポートしています。ナレッジベース（ KB ）記事やコミュニティフォーラムなど、 24 時間 365 日利用可能な幅広いセルフサポートオプションをご用意しています。サポート登録には、 Web チケット処理によるリモートテクニカルサポートが含まれます。</block>
+  <block id="edd15fbeb7b2dffa163336ecd4f3e80c" category="section-title">セルフサポートオプションを使用します</block>
+  <block id="5e4b821a1a82558dead1ef6961e90666" category="paragraph">次のオプションは、 1 日 24 時間、週 7 日間無料でご利用いただけます。</block>
+  <block id="5b6cf869265c13af8566f192b4ab3d2a" category="list-text">ドキュメント</block>
+  <block id="a4a6c2ea0078252eac2d74ef3e6c917c" category="paragraph">現在表示しているBlueXPのマニュアル。</block>
+  <block id="19111351b69b6b15668130b38b7f6038" category="inline-link">ナレッジベース</block>
+  <block id="942c9249796cf6b78c981ebf15195809" category="list-text"><block ref="942c9249796cf6b78c981ebf15195809" category="inline-link-rx"></block></block>
+  <block id="9a3db1abe5491d0eb9bb5d125981356c" category="paragraph">BlueXPナレッジベースで問題のトラブルシューティングに役立つ記事を検索します。</block>
+  <block id="14526abd8bda5af347775025cd5342cf" category="inline-link">コミュニティ</block>
+  <block id="410fdb9caa9c64da2ff3f88f4836960d" category="list-text"><block ref="410fdb9caa9c64da2ff3f88f4836960d" category="inline-link-rx"></block></block>
+  <block id="00c5fef3bb9d593ae96bf5d2ee60354a" category="paragraph">BlueXPコミュニティに参加して、進行中のディスカッションをフォローしたり、新しいディスカッションを作成したりできます。</block>
+  <block id="80b1b0d2b1ebf2b3cba2d25759801afd" category="list-text">mailto ： ng-cloudmanager-feedback@netapp.com [ フィードバックメール ]</block>
+  <block id="6702efec14563f45f1ee2f8c613b8ad8" category="paragraph">お客様のご意見をお考えください。フィードバックを送信して、BlueXPの改善に役立ててください。</block>
+  <block id="d88bacf2a9fdcbbc844edcba97c34e30" category="section-title">ネットアップサポートと一緒にケースを作成します</block>
+  <block id="82812db645b6ff5e9c2a24ddfb66c8d6" category="paragraph">上記のセルフサポートオプションに加え、サポートを有効にしたあとで問題が発生した場合は、ネットアップサポートの担当者と相談して解決できます。</block>
+  <block id="8fece025a1a8fef7018449bf104a2527" category="list-title">始める前に</block>
+  <block id="920fe1428c19533eda6222fe7e58efbe" category="inline-link">BlueXPログインに関連付けられているクレデンシャルの管理方法について説明します</block>
+  <block id="e1d2e1a634647fd631081bc4f6f8e523" category="list-text">[ケースの作成]*機能を使用するには、最初にNetApp Support SiteクレデンシャルをBlueXPログインに関連付ける必要があります。<block ref="2a0d8b66ca9e99d023b48cf25f40fb12" category="inline-link-rx"></block>。</block>
+  <block id="e49aa971c20ec071f1b5bbc3c7266769" category="list-text">シリアル番号のあるONTAPシステムのケースをオープンする場合は、そのシステムのシリアル番号にNSSアカウントを関連付ける必要があります。</block>
+  <block id="6254a4afeeb76765a127fe74d31c1b3d" category="list-text">BlueXPで、[ヘルプ]、[サポート]の順にクリックします。</block>
+  <block id="08d96fdd1a845d80db99e6e1dffb8bc7" category="list-text">[*Resources*]ページで、[Technical Support]で次のいずれかのオプションを選択します。</block>
+  <block id="383133cb6f7207b1c65c3ace94aa5e95" category="list-text">電話の相手と話したい場合は、「*お電話」をクリックしてください。netapp.comのページに移動し、電話番号が表示されます。</block>
+  <block id="5be2e1dfe4bf215289731df45ec8157b" category="list-text">[ケースの作成]*をクリックして、ネットアップサポートスペシャリストとのチケットをオープンします。</block>
+  <block id="d63bf50426f4c712554faec55b30c548" category="list-text">*Service*:問題 が関連付けられているサービスを選択します。たとえば、サービス内のワークフローまたは機能を備えたテクニカルサポート問題 に固有のBlueXPなどです。</block>
+  <block id="2e50c5f85523f0aba9ff2db10f18279c" category="list-text">*作業環境*：ストレージに該当する場合は、* Cloud Volumes ONTAP *または*オンプレミス*を選択し、関連する作業環境を選択します。</block>
+  <block id="aa996e20900197b0ea41485ada083d8c" category="paragraph">作業環境のリストは、サービスの上部バナーで選択したBlueXPアカウント、ワークスペース、コネクタの範囲内にあります。</block>
+  <block id="e6f29fb3c7636dc0040600dd0e84bb79" category="list-text">*ケース優先度*：ケースの優先度を選択します。優先度は、[低]、[中]、[高]、[クリティカル]のいずれかになります。</block>
+  <block id="835eb4008e97c2a7f69bbb2725285e34" category="paragraph">これらの優先度の詳細を確認するには、フィールド名の横にある情報アイコンの上にマウスポインタを合わせます。</block>
+  <block id="0f7d9319c95a8be1492e74601c4b3259" category="list-text">*事象の説明 *：実行したエラーメッセージやトラブルシューティング手順など、問題の詳細な概要 を入力します。</block>
+  <block id="002c6f26fb01affb37b8cf3cef7a1fb0" category="list-text">*その他のメールアドレス*：この問題 を他のユーザーに知らせる場合は、追加のメールアドレスを入力します。</block>
+  <block id="c7f5c1a75acc58c6f004efc0ce1eba09" category="list-text">*添付ファイル（オプション）*：一度に1つずつ、最大5つの添付ファイルをアップロードできます。</block>
+  <block id="bfa80e7aaad6da353b431bff3a0e12d6" category="paragraph">添付ファイルはファイルあたり25 MBに制限されています。サポートされているファイル拡張子は、txt、log、pdf、jpg/jpeg、rtf、 doc/docx、xls/xlsx、およびcsv。</block>
+  <block id="baaf0e61add7d12cf8d12e023d5aef18" category="inline-image-macro">ネットアップサポートでケースを作成できるケースの作成フォームのスクリーンショット。</block>
+  <block id="509259be6d5e15d8959f705cbe0cbcc1" category="paragraph"><block ref="509259be6d5e15d8959f705cbe0cbcc1" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="18f487556417bb6d9721a7005ae097c9" category="paragraph">ポップアップにサポートケース番号が表示されます。ネットアップのサポート担当者がケースを確認し、すぐに対応させていただきます。</block>
+  <block id="04e15da1deae9568b4dcda64fbb0c8d5" category="paragraph">サポートケースの履歴を確認するには、[*設定]、[タイムライン*]の順にクリックして、[サポートケースの作成]という名前のアクションを探します。 右端のボタンをクリックすると、アクションを展開して詳細を表示できます。</block>
+  <block id="5c56753585e89a84941bb3a78bc681af" category="paragraph">ケースを作成しようとすると、次のエラーメッセージが表示される場合があります。</block>
+  <block id="a30f69ab0ec85d427a3e8835713525bd" category="paragraph">"選択したサービスに対してケースを作成する権限がありません"</block>
+  <block id="c7b7a5ae9f37fd7d24e4d641b9186fe9" category="paragraph">このエラーは、NSSアカウントとそれに関連付けられているレコードの会社が、BlueXPアカウントのシリアル番号(例960xxxx）または動作環境のシリアル番号。次のいずれかのオプションを使用して、サポートを受けることができます。</block>
+  <block id="e01df0b4dfd95eba2c59333419e4fac6" category="list-text">製品内のチャットを使用します</block>
+  <block id="639be990cfca56ab4b63685d8bacd437" category="list-text">テクニカル以外のケースをに送信します<block ref="2298f47e4dad19a3156da7ce6116d9b1" category="inline-link-rx"></block></block>
+  <block id="898e35e1a4bf4b025c3edec879439b08" category="section-title">サポートケースの管理（プレビュー）</block>
+  <block id="8b74b053fbeeff5c3b6f4991cb1d028d" category="paragraph">アクティブなサポートケースと解決済みのサポートケースは、BlueXPから直接表示および管理できます。NSSアカウントと会社に関連付けられたケースを管理できます。</block>
+  <block id="394ef093ad3259b9ff0fe7406f015b83" category="paragraph">ケース管理はプレビューとして使用できます。今後のリリースでは、この点をさらに改良し、機能を強化する予定です。製品内のチャットでご意見をお寄せください。</block>
+  <block id="5e4e7672ec2ba2b8a763da7f6714e212" category="list-text">ページ上部のケース管理ダッシュボードには、次の2つのビューがあります。</block>
+  <block id="01c3ffea552d74a5ae390b10e71a1f26" category="list-text">左側のビューには、指定したユーザNSSアカウントによって過去3カ月間にオープンされたケースの総数が表示されます。</block>
+  <block id="e3b6c09a5686233f72ce1ea60a1eb088" category="list-text">右側のビューには、ユーザのNSSアカウントに基づいて、過去3カ月間にオープンしたケースの総数が会社レベルで表示されます。</block>
+  <block id="b19b168cc8a2b8c984465e140256b3a2" category="paragraph">テーブルの結果には、選択したビューに関連するケースが反映されます。</block>
+  <block id="56dcadeee6b0e5c47a52673f9b5a0bb3" category="list-text">目的の列を追加または削除したり、[優先度]や[ステータス]などの列の内容をフィルタリングしたりできます。他の列には、並べ替え機能だけがあります。</block>
+  <block id="6f936762e1223311f031685422fcd3a4" category="paragraph">詳細については、以下の手順を参照してください。</block>
+  <block id="b14929795a61440e9b4ec9f8a4885ae3" category="list-text">ケースごとに、ケースノートを更新したり、ステータスが「Closed」または「Pending Closed」でないケースをクローズしたりすることができます。</block>
+  <block id="34b1296d31cefa72dae9b3a364b1f444" category="list-text">[ケース管理]*をクリックし、プロンプトが表示されたらNSSアカウントをBlueXPに追加します。</block>
+  <block id="d8ce1865cf1fe3cffd60300b4b86ad63" category="paragraph">ケース管理*ページには、BlueXPユーザアカウントに関連付けられたNSSアカウントに関連するオープンケースが表示されます。これは、* NSS管理*ページの上部に表示されるNSSアカウントと同じです。</block>
+  <block id="2ae5ae78bdb2d222f15fd8e89248709c" category="list-text">必要に応じて、テーブルに表示される情報を変更します。</block>
+  <block id="27635a52fe4c34c39ffc6430f4244ec6" category="list-text">[Organization's Cases]*で[View]*をクリックすると、会社に関連付けられているすべてのケースが表示されます。</block>
+  <block id="059e856250b59be3069246887b74a23c" category="list-text">正確な日付範囲を選択するか、別の期間を選択して、日付範囲を変更します。</block>
+  <block id="dfb3764bce2548df4e06357403f9c7d0" category="inline-image-macro">[Case Management]ページのテーブルの上にあるオプションのスクリーンショット。正確な日付範囲、または過去7日、30日、または3カ月を選択できます。</block>
+  <block id="0972db30d942fdb65d1732e6e84bde99" category="paragraph"><block ref="0972db30d942fdb65d1732e6e84bde99" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="a1bb576be9e5a356290f231efb51b3f5" category="list-text">列の内容をフィルタリングします。</block>
+  <block id="3753f10a59e21f58b30e3e67d416453e" category="inline-image-macro">[Status]列のフィルタオプションのスクリーンショット。[Active]や[Closed]など、特定のステータスに一致するケースを除外できます。</block>
+  <block id="cb6a777dd3c6e43b0dc441d38519d219" category="paragraph"><block ref="cb6a777dd3c6e43b0dc441d38519d219" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="1c6ea5ef583389e18e7d7bda70beaa71" category="inline-image-macro">テーブルに表示されるプラスアイコン</block>
+  <block id="0f6cac2f77150840994f84044fc1b12b" category="list-text">をクリックして、テーブルに表示される列を変更します <block ref="b574dd55d604ddb721d869a0fc302007" category="inline-image-macro-rx" type="image"></block> 次に、表示する列を選択します。</block>
+  <block id="370b44009f1b82d0b6b178bb80cc62fa" category="inline-image-macro">表に表示できる列を示すスクリーンショット。</block>
+  <block id="e65065c4fd326b9f3a1eeb9453c30d73" category="paragraph"><block ref="e65065c4fd326b9f3a1eeb9453c30d73" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="ad0ae9ea1f2e8d973a9a0f6bb169f494" category="inline-image-macro">テーブルの最後の列に表示される3つの点を持つアイコン</block>
+  <block id="6ba7d68d8b3ef0f3398afb9d3ea96172" category="list-text">をクリックして既存のケースを管理します <block ref="566c029d89e7d5421080767a37bf443e" category="inline-image-macro-rx" type="image"></block> 使用可能なオプションのいずれかを選択します。</block>
+  <block id="6d9dd74e7709ef802d299966f7898f6b" category="list-text">*ケースの表示*:特定のケースの詳細を表示します。</block>
+  <block id="8e6b52a532a4fbbfc98dca3ebfa5f1e6" category="list-text">*ケースノートの更新*：問題の詳細を入力するか、*ファイルのアップロード*を選択して最大5つのファイルを添付します。</block>
+  <block id="f791bc685c526af8296381acff10f6a0" category="list-text">*ケースをクローズ*：ケースをクローズする理由の詳細を入力し、*ケースをクローズ*をクリックします。</block>
+  <block id="e93217b2f709a398ce3c0fb753beb05f" category="inline-image-macro">テーブルの最後の列でメニューを選択した後に実行できる操作を示すスクリーンショット。</block>
+  <block id="2ea260929e27ffcb623c8aa35689bd18" category="paragraph"><block ref="2ea260929e27ffcb623c8aa35689bd18" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="cebcc4f8fb63a87b8b3ed75359f6fe2b" category="summary">Open Virtual Appliance（OVA；オープン仮想アプライアンス）をインストールする前に、vCenterに証明書を追加してください。.tarファイルにはOVA証明書とEntrust Root証明書とIntermediate証明書が含まれており、証明書は証明書フォルダ内にあります。OVA環境は、VMware vCenter 8.0以降でサポートされます。</block>
+  <block id="596e6d7cbb1dd1b33baf91e428660d8d" category="doc">Open Virtual Appliance（OVA；オープン仮想アプライアンス）のダウンロード</block>
+  <block id="79ffbf4faa4d41e09eeadafaa6e0f3ed" category="paragraph">Open Virtual Appliance（OVA；オープン仮想アプライアンス）をインストールする前に、vCenterに証明書を追加してください。。<block ref="58963a595c988dc6f693cb3238dc907a" prefix=" " category="inline-code"></block> ファイルにOVA証明書とEntrustルート証明書と中間証明書が含まれています。証明書は証明書フォルダ内にあります。OVA環境は、VMware vCenter 8.0以降でサポートされます。</block>
+  <block id="710a335d5d45bb0e553c8dfc3cb5fb65" category="paragraph">Entrust証明書によって署名されたOVAが信頼されていない場合は、次の手順を実行して問題を解決する必要があります。</block>
+  <block id="e4e11fb02983a1042067d773fc061af8" category="list-text">VMS OVAのBlueXPバックアップ/リカバリをダウンロードするには、次の手順を実行します。</block>
+  <block id="9d2169c1c2855b78a7aeaa4f42d27dc7" category="inline-link">NetApp Support Site</block>
+  <block id="8616311ff8b8fbc30493b11c288ebdb1" category="list-text">にログインします<block ref="475bc6b7fc84a67aa4a3725984f65243" category="inline-link-rx"></block></block>
+  <block id="7cb834fabfa5c8527836361e4f3f2ee4" category="list-text">製品のリストから* BlueXP Backup and Recovery for VMs *を選択し、*[Download Latest Release]*ボタンをクリックします。</block>
+  <block id="e1349765918d1ee56b3cf4abe7d1a7d8" category="list-text">BlueXPのVMのバックアップとリカバリをダウンロードします<block ref="58963a595c988dc6f693cb3238dc907a" prefix=" " category="inline-code"></block> 任意の場所にファイルを移動します。</block>
+  <block id="f7fa43f6dd6c15d238137979bfafde96" category="list-text">tarファイルの内容を展開します。tarファイルには、ovaフォルダとcertsフォルダが含まれています。certsフォルダには、Entrustルート証明書と中間証明書が含まれています。</block>
+  <block id="cfaf5f859f4686c2b852499357f9dc25" category="list-text">vSphere Clientのクレデンシャルを使用してAWS上のVMCにログインします。</block>
+  <block id="7100253078fe422eb855de61ba19293d" category="list-text">メニューの[Administration][Certificates]&gt;[Certificate Management]に移動します。</block>
+  <block id="cb4150305fb89a3d123bd5def9035842" category="list-text">[信頼されたルート証明書]*の横にある*[追加]*をクリックします。</block>
+  <block id="cae0f21a04207830bb7b0629d6cb6d8b" category="list-text">certsフォルダに移動します。</block>
+  <block id="d93a23c4b41c8a9962980d34d8ebb285" category="list-text">Entrustルート証明書と中間証明書を選択します。</block>
+  <block id="28f971e28dfc95cd1f45e3f3e43cb5ae" category="list-text">各証明書を一度に1つずつインストールします。</block>
+  <block id="47d335151244395fba53cdbebf56ce73" category="list-text">証明書は、[信頼されたルート証明書]の下のパネルに追加されます。</block>
+  <block id="f8cf0f876b8fb430444b7badd68d522a" category="paragraph">証明書をインストールすると、OVAを検証して導入できます。</block>
+  <block id="ac0fcdd28a3e3090428955f626f658ae" category="paragraph">ダウンロードしたOVAが改ざんされていない場合は、[Publisher]列に[Trusted certificate]と表示されます。</block>
+  <block id="0bf23a34b361e04176b05c8ff9933dab" category="summary">BlueXPのVM向けバックアップ/リカバリの最新情報をご紹介します。</block>
+  <block id="cbe3139b2b301e8b5cb09208b5f9c7a9" category="doc">BlueXPのVM向けバックアップ/リカバリの新機能</block>
+  <block id="6288a6987e24eb76541c52625adf3260" category="paragraph">BlueXPのVM向けバックアップ/リカバリの新機能をご紹介します。</block>
+  <block id="cc1b4c646adefed490c7696f1ff7817f" category="section-title">2023年7月13日</block>
+  <block id="121644fa305df0bb070aa57221c009d8" category="section-title">VMS 1.0向けBlueXPのバックアップ/リカバリ機能がGAになりました</block>
+  <block id="8dafb4fe85f37b1e252552bbe0dc8770" category="paragraph">BlueXPのVMのバックアップとリカバリを使用して、仮想マシンのデータを保護できます。Amazon FSx上のデータストアをバックアップし、仮想マシンを元の場所にリストアできます。</block>
+  <block id="84258e8a50fea5298ac22726e784f700" category="paragraph">この解決策は、VMware Cloud on AWSおよびAmazon FSx for NetApp ONTAP上の仮想マシンとデータストアに特化しています。</block>
+  <block id="d239c84aafe816ca8d29fe43ddfd8fc2" category="paragraph"><block ref="d239c84aafe816ca8d29fe43ddfd8fc2" category="inline-link-macro-rx"></block></block>
+  <block id="fa6a722d89c88282f71082f279d5f8ab" category="summary">仮想マシンをリストアするときに、選択したバックアップコピーで既存の内容を上書きするか、仮想マシンのコピーを作成できます。</block>
+  <block id="288451f6138b6088004689ea7006cbe9" category="doc">Amazon FSxから仮想マシンをリストア</block>
+  <block id="9560f1f6257455641b369c78c24ba389" category="list-text">バックアップが存在している必要があります。</block>
+  <block id="1b7e9359902782e10a9a390de62f931b" category="paragraph">仮想マシンをリストアする前に、BlueXPのVMのバックアップとリカバリを使用して仮想マシンのバックアップを作成しておく必要があります。</block>
+  <block id="d46b3d9b39b92f404423eb81d683ee8c" category="paragraph">BlueXPのVMのバックアップとリカバリ以外のソフトウェアで実行された仮想マシンのSnapshotコピーがあると、リストア処理を正常に完了できません。</block>
+  <block id="2e49391fc04780cd542d3abd73d378c7" category="list-text">仮想マシンは転送中ではありません。</block>
+  <block id="7becb12abd0b010b5f658d46a631986d" category="paragraph">リストアする仮想マシンがvMotionまたはStorage vMotionの状態でないことを確認します。</block>
+  <block id="fe1a8806b2314aa86b6c78526a3a59f3" category="list-text">HA構成エラー。</block>
+  <block id="1d7436e341895808fe351ed607ff7409" category="paragraph">バックアップを別の場所にリストアする前に、 vCenter ESXi Host Summary 画面に HA 構成のエラーが表示されていないことを確認します。</block>
+  <block id="da3354cf95782becd9873fd1995f3c04" category="list-text">仮想マシンの登録が解除され、再登録されました。</block>
+  <block id="082437eea99df6f02c7a41061bfdc038" category="paragraph">仮想マシンのリストア処理を実行すると、元の仮想マシンの登録が解除され、バックアップSnapshotコピーから仮想マシンがリストアされ、リストアされた仮想マシンが同じESXiサーバに登録されます。リストア後に、仮想マシンをリソースグループに手動で追加する必要があります。</block>
+  <block id="3ccb545df639f8d635171ca5cad8bac1" category="list-text">データストアのリストア</block>
+  <block id="53cfd56b3608a4ed4c03e8e0c5caae45" category="paragraph">データストアはリストアできませんが、データストア内の任意の仮想マシンをリストアできます。</block>
+  <block id="6d7ec4cee1b0c4e3059a9c3d8bb71046" category="list-text">仮想マシンのVMware整合性スナップショットの失敗。</block>
+  <block id="45ece8b1113e383b0e7e2917cb3d88a5" category="paragraph">仮想マシンのVMware整合性スナップショットに障害が発生した場合でも、仮想マシンはバックアップされます。バックアップコピーに格納されたエンティティは、リストアウィザードで表示し、リストア処理に使用できます。</block>
+  <block id="a638ca591549f6494bfb64fca964731b" category="list-text">VMware vSphere Web Client GUIで、ツールバーの*[メニュー]*をクリックし、*[インベントリ]*をクリックして*[仮想マシンおよびテンプレート]*を選択します。</block>
+  <block id="c22f3159395e7ce6c9a8b604106623f7" category="list-text">左側のナビゲーションペインで、*[仮想マシン]*を右クリックし、ドロップダウンリストから*[Cloud NetApp Backup]*を選択し、*[リストア]*を選択してウィザードを開始します。</block>
+  <block id="de43308fec906273acd64a6aed609cb8" category="list-text">リストア * ウィザードの * バックアップの選択 * ページで、リストアするバックアップ Snapshot コピーを選択します。</block>
+  <block id="43bf8720e765e5ec5249782941ceb574" category="paragraph">特定のバックアップ名またはバックアップ名の一部を検索するか、フィルタアイコンをクリックして日時の範囲、 VMware スナップショットの有無、マウントするバックアップの有無、および場所を選択して、バックアップリストをフィルタリングすることができます。[OK] をクリックしてウィザードに戻ります。</block>
+  <block id="664749414cf1bca3f1fd4f2bfac452d3" category="list-text">[Select Scope]ページで、[Restore scope]フィールドで*[Entire Virtual Machine]*を選択し、リストア先を選択してから、バックアップをマウントするデスティネーションESXiの情報を入力します。</block>
+  <block id="9d7f2f9bd72cb1eb66d906abadf682b1" category="paragraph">パーシャル・バックアップをリストアする場合、リストア処理では * Select Scope * ページがスキップされます。</block>
+  <block id="4a501b597bd4167c209d8bdff7aa576e" category="list-text">リストア処理後に仮想マシンの電源をオンにする場合は、[* Restart VM]*チェックボックスを有効にします。</block>
+  <block id="de179e769f37bceb37b99454fcd0fc9f" category="list-text">[ * 場所の選択 * ] ページで、リストアしたデータストアの場所を選択します。</block>
+  <block id="fca1924bee8a7a6fbfd8c512efe56373" category="list-text">[概要]*ページを確認し、*[完了]*をクリックします。</block>
+  <block id="ba4e58f4bc0a74931646cad754c7a04b" category="list-text">*オプション*：画面下部の*[最近のタスク]*をクリックして、処理の進捗状況を監視します。</block>
+  <block id="5fc34c96a53e88e10cd1df77a72005f4" category="list-text">リストアした仮想マシンをリソースグループに追加します。</block>
+  <block id="a1c0ec7f7265d7d6dfdfe38fee9792ba" category="paragraph">仮想マシンはリストアされますが、以前のリソースグループに自動的に追加されることはありません。そのため、リストアした仮想マシンを適切なリソースグループに手動で追加する必要があります。</block>
+  <block id="a6fc5033cd7d2f5d0e979c35a6273cb2" category="sidebar">BlueXPのVM向けバックアップ/リカバリは、VMware Cloud on AWSおよびAmazon FSx for NetApp ONTAP上のVMとデータストアにデータ保護サービスを提供するスタンドアロン仮想アプライアンス（オープン仮想アプライアンス形式）です。</block>
+  <block id="be11c74c1dd7f307bb80183a90dc2067" category="sidebar">はじめに</block>
+  <block id="d371b3e46ec1452b89412f2da008cb64" category="sidebar">BlueXPのVMのバックアップとリカバリについて説明します</block>
+  <block id="9007a105e32d922b23d29ba0aead2fcc" category="sidebar">OVAをダウンロードします</block>
+  <block id="8bb0226ce7a5cb9b16b8b08929241212" category="sidebar">VMにBlueXPのバックアップとリカバリを使用</block>
+  <block id="0a4a3719bc7519d1162060e0f0e08f8a" category="sidebar">バックアップポリシーを作成する</block>
+  <block id="2565487a49c72c3b5f0b1a94e3967341" category="sidebar">BlueXPのVM向けバックアップ/リカバリドキュメント</block>
+  <block id="7d0ee6fed10d3d4e5c9ee496729ab519" category="sidebar">リリースノート</block>
+  <block id="735a77510f7427ed8e16a69ca145868b" category="sidebar">NFSデータストアをAmazon FSxにバックアップ</block>
+  <block id="0adc03eac86772ad2c75c8f140be417e" category="sidebar">知識とサポート</block>
+</blocks>

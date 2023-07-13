@@ -1,0 +1,28 @@
+---
+indexpage:
+  lead: BlueXPのVM向けバックアップ/リカバリは、VMware Cloud on AWSおよびAmazon FSx for NetApp ONTAP上のVMとデータストアにデータ保護サービスを提供するスタンドアロン仮想アプライアンス（オープン仮想アプライアンス形式）です。
+  tiles:
+  - title: はじめに
+    links:
+    - title: BlueXPのVMのバックアップとリカバリについて説明します
+      url: concept-bluexp-backup-and-recovery-for-virtual-machines-on-amazon-fsx.html
+    - title: サポートされないワークフロー
+      url: concept-unsupported-workflows.html
+  - title: BlueXPでVMのバックアップとリカバリを導入
+    links:
+    - title: OVAをダウンロードします
+      url: task-download-the-open-virtual-appliance.html
+    - title: BlueXPでVMのバックアップとリカバリを導入
+      url: task-deploy-bluexp-backup-and-recovery-for-vms.html
+  - title: VMにBlueXPのバックアップとリカバリを使用
+    links:
+    - title: ストレージを追加します
+      url: task-add-storage.html
+    - title: バックアップポリシーを作成する
+      url: task-create-backup-policies-for-vms-and-datastores.html
+    - title: リソースグループを作成する
+      url: task-create-resource-groups.html
+    - title: リソースグループをオンデマンドでバックアップする
+      url: task-back-up-resource-groups-on-demand.html
+    - title: Amazon FSxから仮想マシンをリストア
+      url: task-restore-virtual-machines-from-amazon-fsx.html

@@ -1,0 +1,43 @@
+---
+permalink: task-add-storage.html 
+sidebar: sidebar 
+keywords: add, storage 
+summary: VMをバックアップまたはリストアする前に、「Amazon FSx for NetApp ONTAP」または「Amazon FSx for NetApp ONTAP SVM」をストレージシステムとして追加する必要があります。ストレージを追加することで、BlueXPのVMのバックアップとリカバリをvCenterで認識して管理できるようになります。 
+---
+= ストレージを追加します
+:allow-uri-read: 
+:icons: font
+:imagesdir: ./media/
+
+
+[role="lead"]
+VMをバックアップまたはリストアする前に、「Amazon FSx for NetApp ONTAP」または「Amazon FSx for NetApp ONTAP SVM」をストレージシステムとして追加する必要があります。ストレージを追加することで、BlueXPのVMのバックアップとリカバリをvCenterで認識して管理できるようになります。
+
+.作業を開始する前に
+ESXiサーバ、VMのBlueXPバックアップとリカバリ、および各vCenterが同時に同期されている必要があります。ストレージを追加しようとしても、 vCenter の時刻設定が同期されていないと、 Java 証明書エラーが表示されて処理が失敗することがあります。
+
+.このタスクについて
+BlueXPのVMのバックアップとリカバリは、直接接続されたStorage VMとストレージクラスタ内のStorage VMに対してバックアップとリストアの処理を実行します。
+
+* Storage VM の名前は管理 LIF に解決できる必要があります。
++
+BlueXPのVMのバックアップとリカバリでStorage VM名のetcホストエントリを追加した場合は、それらのエントリが仮想アプライアンスからも解決できることを確認する必要があります。
+
++
+管理 LIF に解決できない名前の Storage VM を追加すると、プラグインがその Storage VM 上のデータストアまたはボリュームを検出できないため、スケジュールされたバックアップジョブが失敗します。この場合は、VMのバックアップとリカバリ用にStorage VMをBlueXPに追加して管理LIFを指定するか、Storage VMを含むクラスタを追加してクラスタ管理LIFを指定してください。
+
+* VMのBlueXPバックアップ/リカバリの複数のインスタンス間、またはvCenter上のVMのWindows SnapCenter ServerとBlueXPバックアップ/リカバリの複数のインスタンス間で、ストレージ認証の詳細が共有されません。
+
+
+.手順
+. vSphereクライアントの左側のナビゲーションペインで、*ストレージシステム*をクリックします。
+. [ストレージシステム]ページで、*[追加]*をクリックします。
++
+image:vSphere client.png[""]
+
+. ストレージシステムの追加*ウィザードで、Storage VMまたはクラスタの基本情報を入力します。
+. [Credentials]*認証方法を選択し、Amazon FSx管理者としてログインします。
+. [ 追加（ Add ） ] をクリックします。
+
+
+ストレージクラスタを追加すると、そのクラスタ内のすべての Storage VM が自動的に追加されます。自動的に追加された Storage VM （「暗黙的な」 Storage VM とも呼ばれます）は、クラスタのサマリーページに、ユーザ名ではなくハイフン（ - ）で表示されます。ユーザ名は、明示的なストレージエンティティに対してのみ表示されます。
