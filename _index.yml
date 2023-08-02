@@ -26,3 +26,11 @@ indexpage:
       url: task-back-up-resource-groups-on-demand.html
     - title: Amazon FSxから仮想マシンをリストア
       url: task-restore-virtual-machines-from-amazon-fsx.html
+  - title: デモとチュートリアル
+    links:
+    - title: VMのBlueXPバックアップ/リカバリのインストール
+      url: https://www.youtube.com/watch?v=kCuKY0fBf5U
+    - title: ONTAPのデータストアとVM向けバックアップFSx
+      url: https://www.youtube.com/watch?v=cLWOFm_3g3U
+    - title: FSx for ONTAPデータストアのVMとVMDKをリストア
+      url: https://www.youtube.com/watch?v=RVLYP0lguxkM

@@ -2,9 +2,9 @@
 permalink: task-download-the-open-virtual-appliance.html 
 sidebar: sidebar 
 keywords: download, open virtual appliance 
-summary: Open Virtual Appliance（OVA；オープン仮想アプライアンス）をインストールする前に、vCenterに証明書を追加してください。.tarファイルにはOVA証明書とEntrust Root証明書とIntermediate証明書が含まれており、証明書は証明書フォルダ内にあります。OVA環境は、VMware vCenter 8.0以降でサポートされます。 
+summary: VMware vCenter 8.0以降でOpen Virtual Appliance（OVA）をダウンロードして、VMのBlueXPバックアップおよびリカバリを導入します。 
 ---
-= Open Virtual Appliance（OVA；オープン仮想アプライアンス）のダウンロード
+= Open Virtual Applianceのダウンロード
 :allow-uri-read: 
 :experimental: 
 :icons: font
@@ -12,26 +12,30 @@ summary: Open Virtual Appliance（OVA；オープン仮想アプライアンス�
 
 
 [role="lead"]
-Open Virtual Appliance（OVA；オープン仮想アプライアンス）をインストールする前に、vCenterに証明書を追加してください。。 `.tar` ファイルにOVA証明書とEntrustルート証明書と中間証明書が含まれています。証明書は証明書フォルダ内にあります。OVA環境は、VMware vCenter 8.0以降でサポートされます。
+VMware vCenter 8.0以降でOpen Virtual Appliance（OVA）をダウンロードして、VMのBlueXPバックアップおよびリカバリを導入します。
 
-Entrust証明書によって署名されたOVAが信頼されていない場合は、次の手順を実行して問題を解決する必要があります。
+.作業を開始する前に
+Entrust証明書によって署名されたOVAが信頼されていない場合は、中間証明書をインストールしてvCenterに追加してください。
 
 .手順
 . VMS OVAのBlueXPバックアップ/リカバリをダウンロードするには、次の手順を実行します。
 +
-** にログインします https://mysupport.netapp.com/products/index.html["NetApp Support Site"^]
-** 製品のリストから* BlueXP Backup and Recovery for VMs *を選択し、*[Download Latest Release]*ボタンをクリックします。
-** BlueXPのVMのバックアップとリカバリをダウンロードします `.tar` 任意の場所にファイルを移動します。
+.. にログインします https://mysupport.netapp.com/products/index.html["NetApp Support Site"^]
+.. 製品のリストから* BlueXP Backup and Recovery for VMs *を選択し、*[Download Latest Release]*ボタンをクリックします。
+.. BlueXPのVMのバックアップとリカバリをダウンロードします `.tar` 任意の場所にファイルを移動します。
 
 
-. tarファイルの内容を展開します。tarファイルには、ovaフォルダとcertsフォルダが含まれています。certsフォルダには、Entrustルート証明書と中間証明書が含まれています。
-. vSphere Clientのクレデンシャルを使用してAWS上のVMCにログインします。
-. メニューの[Administration][Certificates]>[Certificate Management]に移動します。
+. tarファイルの内容を展開します。tarファイルには、ovaフォルダとcertsフォルダが含まれています。certsフォルダには中間証明書が含まれています。
+. vSphere Clientで、*[管理]>[証明書]>[証明書管理]*に移動します。
 . [信頼されたルート証明書]*の横にある*[追加]*をクリックします。
 +
-** certsフォルダに移動します。
-** Entrustルート証明書と中間証明書を選択します。
-** 各証明書を一度に1つずつインストールします。
+
+NOTE: デフォルトでは、ルート証明書がインストールされています。
+
++
+.. certsフォルダに移動します。
+.. 中間証明書を選択します。
+.. 各証明書を一度に1つずつインストールします。
 
 
 . 証明書は、[信頼されたルート証明書]の下のパネルに追加されます。
