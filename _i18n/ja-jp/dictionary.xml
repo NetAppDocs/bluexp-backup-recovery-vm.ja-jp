@@ -89,7 +89,6 @@ Snapshot ラベルは、このポリシーで作成された Snapshot をセカ�
   <block id="1ac228dd82997c534998d8c776a81009" category="list-text">有効な公開鍵ファイルと秘密鍵ファイルがある証明書が必要です。詳細については、「ストレージ証明書管理」セクションの記事を参照してください。</block>
   <block id="78dd2db401a1c567e4094c34da3d53e3" category="list-text">vSphere Clientのすべてのブラウザセッションからログアウトして閉じておく必要があります。また、VMのBlueXPバックアップおよびリカバリの導入時にブラウザキャッシュ問題が発生しないように、ブラウザキャッシュを削除しておく必要があります。</block>
   <block id="8ba7fa3d7ed705b172a2802a36085538" category="list-text">vCenter で Transport Layer Security （ TLS ）を有効にしておく必要があります。VMware のドキュメントを参照してください。</block>
-  <block id="d706d30254764a674cce32eb658463b4" category="paragraph">vCenterと同じタイムゾーンのVMについては、BlueXPのバックアップとリカバリを導入します。</block>
   <block id="60fef4f382ecd40d07aa6f5d88accaa7" category="list-text">VMware vCenter 7.0.3以降のバージョンの場合は、「Open Virtual Appliance（OVA）のダウンロード」セクションの手順に従って、証明書をvCenterにインポートします。</block>
   <block id="9e6343514537d0d6a99bafe616c5aa86" category="list-text">ブラウザから VMware vSphere vCenter にアクセスします。</block>
   <block id="a5bc2dcdf45e4e981e8c5477447aa605" category="list-text">VMware vCenter Single Sign-Onページにログインします。</block>
@@ -453,4 +452,8 @@ Snapshot ラベルは、このポリシーで作成された Snapshot をセカ�
   <block id="522cbb900314aeb84eb5a961c5f94672" category="section-title">クラウドプロバイダのファイルサービスのサポート</block>
   <block id="f6185bb12f5e53c800be8cda7fbca65b" category="paragraph">クラウドプロバイダのファイルサービスとそのインフラ、またはサービスを使用する解決策に関連するテクニカルサポートについては、該当する製品のBlueXPドキュメントの「困ったときは」を参照してください。</block>
   <block id="3880ae5df9fdc4d0fc4a6d00a2239530" category="paragraph">BlueXPおよびそのストレージソリューションとサービスに固有のテクニカルサポートを受けるには、以下に記載されているサポートオプションを使用してください。</block>
+  <block id="f8c50cec8b281b2a3e589464e5dfba35" category="list-text">vmc.vmware.comコンソールで、ファイアウォールポートを開き、コンピューティングゲートウェイのパブリックIPがTCP 443経由で管理ネットワーク上のvCenterと通信できるようにします。</block>
+  <block id="6bfaca7cf08b162bbacdc9479a2ca693" category="list-text">AWSコンソールで、FSx for ONTAPが実行されているVPCのセキュリティグループを更新して、VMのBlueXPバックアップとリカバリがFSx for ONTAPにアクセスできるようにする必要があります。</block>
+  <block id="852604ac38f959dae2ec3b3009d3fc07" category="paragraph">仮想マシンのVMとデータストアを保護するには、VMに対してBlueXPのバックアップとリカバリを導入する必要があります。</block>
+  <block id="ebfc4f565cf4b541e8d94e4baad23f9f" category="list-text">vCenterと同じタイムゾーンのVMについて、BlueXPのバックアップとリカバリを導入しておく必要があります。</block>
 </blocks>
