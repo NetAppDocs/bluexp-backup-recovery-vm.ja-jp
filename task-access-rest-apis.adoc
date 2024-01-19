@@ -1,0 +1,44 @@
+---
+permalink: task-access-rest-apis.html 
+sidebar: sidebar 
+keywords: access REST APIs, REST APIs 
+summary: REST APIにアクセスするには、次の手順を実行します。 
+---
+= Swagger API Web ページから REST API にアクセスします
+:allow-uri-read: 
+:icons: font
+:imagesdir: ./media/
+
+
+[role="lead"]
+REST API は Swagger Web ページから利用できます。VM REST APIのBlueXPのバックアップとリカバリを表示するには、Swagger Webページにアクセスします。
+
+.作業を開始する前に
+VM REST APIのBlueXPのバックアップとリカバリについては、VMアプライアンスのBlueXPバックアップとリカバリのIPアドレスまたはホスト名を確認しておく必要があります。
+
+
+NOTE: このプラグインでは、サードパーティのアプリケーションと統合する目的で REST API のみがサポートされます。 PowerShell コマンドレットや CLI はサポートされません。
+
+.手順
+. ブラウザから、 URL を入力してプラグイン Swagger Web ページにアクセスします。
++
+https://<OVA_IP>/api/swagger-ui/index.html[]
+
++
+
+NOTE: REST API URL には、 + 、を使用しないでください。、 % 、および & 。
+
++
+* 例 *
+
++
+BlueXPのVM REST APIのバックアップとリカバリにアクセスします。
+
++
+https://<OVA_IP>/api/swagger-ui/index.html[]
+
++
+ログインvCenter認証メカニズムを使用してトークンを生成します。
+
+. API リソースタイプをクリックすると、そのリソースタイプの API が表示されます。
+

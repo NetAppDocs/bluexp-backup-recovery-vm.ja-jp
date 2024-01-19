@@ -12,7 +12,11 @@ sidebar:
   - title: BlueXPのVM向けバックアップ/リカバリドキュメント
     url: "/index.html"
   - title: リリースノート
-    url: "/whats-new.html"
+    entries:
+    - title: 新機能
+      url: "/whats-new.html"
+    - title: 既知の制限
+      url: "/reference-limitations.html"
   - title: はじめに
     entries:
     - title: BlueXPのVMのバックアップとリカバリについて説明します
@@ -37,8 +41,22 @@ sidebar:
       url: "/task-create-resource-groups.html"
     - title: リソースグループをオンデマンドでバックアップする
       url: "/task-back-up-resource-groups-on-demand.html"
+  - title: データストアのマウントとアンマウント
+    entries:
+    - title: データストアのマウント
+      url: "/task-mount-datastores.html"
+    - title: データストアのアンマウント
+      url: "/task-unmount-datastores.html"
+  - title: VMDK を接続および接続解除する
+    entries:
+    - title: VM に VMDK を接続する
+      url: "/task-attach-vmdks-vm.html"
+    - title: 仮想ディスクを接続解除
+      url: "/task-detach-virtual-disks.html"
   - title: Amazon FSxから仮想マシンをリストア
     url: "/task-restore-virtual-machines-from-amazon-fsx.html"
+  - title: REST APIにアクセスできます
+    url: "/task-access-rest-apis.html"
   - title: 知識とサポート
     entries:
     - title: サポートに登録します

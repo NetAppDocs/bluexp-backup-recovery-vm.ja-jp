@@ -1,0 +1,29 @@
+---
+permalink: task-unmount-datastores.html 
+sidebar: sidebar 
+keywords: mount, datastores 
+summary: データストアをアンマウントすると、ストレージへのホストアクセスが削除されます。 
+---
+= データストアのアンマウント
+:allow-uri-read: 
+:experimental: 
+:icons: font
+:imagesdir: ./media/
+
+
+[role="lead"]
+データストア内のファイルにアクセスする必要がなくなった場合は、バックアップをアンマウントできます。
+
+.手順
+. VMware vSphere Clientで、 image:menu_icon.png[""] >*インベントリ*>*ストレージ*。
+. 左側のナビゲーションペインで、データストアを右クリックし、ドロップダウンリストから*[BlueXP backup and recovery for VMs]*を選択し、2番目のドロップダウンリストから*[Unmount]*を選択します。
++
+
+NOTE: アンマウントするデータストアを間違えないようにしてください。そうしないと、原因が本番環境に与える影響が発生する可能性があります。
+
+. [バックアップのアンマウント]*ダイアログボックスで、データストアを選択し、*[データストアのアンマウント]*チェックボックスを選択して*[アンマウント]*をクリックします。
+. オプション：データストアがアンマウントされたことを確認するには、VMware vSphere Clientのツールバーで*[BlueXP backup and recovery for VMs]*をクリックします。
++
+アンマウントしたデータストアが、ダッシュボードの*[最近のジョブアクティビティ]タイルに表示されます。
+
+

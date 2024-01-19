@@ -1,0 +1,36 @@
+---
+permalink: task-mount-datastores.html 
+sidebar: sidebar 
+keywords: mount, datastores 
+summary: データストアをマウントすると、ホストからストレージにアクセスできるようになります。 
+---
+= データストアのマウント
+:allow-uri-read: 
+:experimental: 
+:icons: font
+:imagesdir: ./media/
+
+
+[role="lead"]
+バックアップ内のファイルにアクセスする必要がある場合は、バックアップからデータストアをマウントできます。
+
+.作業を開始する前に
+* VMCポータルから組織IDとAPIトークンをコピーし、VMware Cloud Servicesの設定に追加してください。
+* 代替 ESXi ホストがストレージに接続できることを確認します
++
+代替のESXiホストにマウントする場合は、代替のESXiホストがストレージに接続できること、およびUIDとGIDが元のホストと同じであることを確認する必要があります。
+
+
+
+.手順
+. VMware vSphere Clientで、 image:menu_icon.png[""] >*インベントリ*>*ストレージ*。
+. 左側のナビゲーションペインで、データストアを右クリックし、ドロップダウンリストから*[BlueXP backup and recovery for VMs]*を選択し、2番目のドロップダウンリストから*[Mount Backup]*を選択します。
+. [データストアのマウント]*ページで、バックアップとバックアップの場所（プライマリまたはセカンダリ）を選択し、*[マウント]*をクリックします。
+. オプション：データストアがマウントされていることを確認するには、VMware vSphere Clientのツールバーで*[BlueXP backup and recovery for VMs]*をクリックします。
++
+マウントしたデータストアが、ダッシュボードの*[最近のジョブアクティビティ]タイルに表示されます。
+
++
+ボリュームのクローニング時に新しい Snapshot コピーが作成されないようにするには、 SnapVault ボリュームの ONTAP スケジュールを無効にします。以前の既存の Snapshot コピーは削除されません。
+
+

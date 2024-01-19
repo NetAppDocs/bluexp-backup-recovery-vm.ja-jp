@@ -25,19 +25,14 @@
   <block id="8e76505b54822d8003db9695ebc8dded" category="doc">VM とデータストアのバックアップポリシーの作成</block>
   <block id="271beae8f11b01c3f45767fc1bd5c1a9" category="list-text">前提条件を確認しておく必要があります。</block>
   <block id="020c68712d58d0c6ae79d6422851ae45" category="list-text">セカンダリストレージの関係を設定しておく必要があります。</block>
-  <block id="06e3c2a5372f8d3d86877d169badf325" category="list-text">Snapshot コピーをミラーセカンダリストレージまたはバックアップセカンダリストレージにレプリケートする場合は、関係が設定されていることと、 SnapCenter 管理者がユーザにソースとデスティネーションの両方のボリューム用に Storage VM を割り当てておく必要があります。</block>
   <block id="fe693831347b037af8a5d8babd163c2e" category="list-text">NFSデータストア上のVersion-FlexibleMirror関係でSnapshotコピーをセカンダリストレージに正常に転送するには、SnapMirrorポリシータイプがAsynchronous Mirrorであり、「all_source_snapshots」オプションがオンになっていることを確認します。</block>
   <block id="b3f67a94ed7b9ba31bd2698489179f27" category="list-text">セカンダリストレージ（mirror-vault）上のSnapshotコピーの数が上限に達すると、バックアップ処理でバックアップを登録して保持を適用する処理が失敗し、次のエラーが表示されます。This Snapshot copy is currently used as a reference Snapshot copy by one or more SnapMirror relationships.Snapshotコピーを削除すると、原因の以降のSnapMirror処理が失敗する可能性があります。</block>
   <block id="7cb7ec638ee3f628b5dd7b29b735054f" category="paragraph">この問題を修正するには、 Snapshot コピーの上限に達しないように、セカンダリストレージの SnapMirror 保持ポリシーを設定します。</block>
   <block id="afb53cfa3120d45d1a3d76236dda1012" category="list-text">VMと整合性のあるバックアップを作成する場合は、VMwareツールをインストールして実行する必要があります。VMを休止するには、VMware Toolsが必要です。</block>
   <block id="1b29ba4e6cf39ab8317f76076c2baeed" category="list-text">BlueXPのVMのバックアップとリカバリの左側にあるナビゲーションペインで、*[Policies]*をクリックします。</block>
-  <block id="2be9030b1634912139eaab40b3092dce" category="list-text">[ポリシー]*ページで、*[作成]*をクリックしてウィザードを開始します。
-<block ref="906916a1f3ea00481784d2dcf7dafe3d" category="inline-image-macro-rx" type="image"></block></block>
   <block id="f9537d47a4839ca02a4ca9726157e701" category="list-text">[New Backup Policy]*ページで、ポリシーを使用するAWS上のVMCを選択し、ポリシー名と概要を入力します。</block>
   <block id="9efc9e0c08da510b5195bb9dc4b1b7c2" category="list-text">サポートされない文字です</block>
   <block id="69a02b2d668a0ebee1d9ac100a00074c" category="paragraph">VM 、データストア、クラスタ、ポリシー、バックアップ、 またはリソースグループ名： %&amp;*$#@ ！\ / ： * ？"&lt;&gt; - | ； ' 、。</block>
-  <block id="9269e051e7bd31dcb56553a7f11183a2" category="paragraph">アンダースコア文字（ _ ）を使用できます。
-<block ref="6648fd21234a7ed16d280775be5d73d3" category="inline-image-macro-rx" type="image"></block></block>
   <block id="a923c6bf503ee78e9fc4b4479248cff6" category="list-text">保持設定を指定します。</block>
   <block id="2eff7650afc7423cc6df7c21eaaf0430" category="paragraph">SnapVault レプリケーションを有効にする場合は、保持数を 2 以上に設定する必要があります。保持数を 1 バックアップに設定すると、保持処理が失敗することがあります。これは、新しい Snapshot コピーがターゲットにレプリケートされるまで、最初の Snapshot コピーが SnapVault 関係の参照 Snapshot コピーになるためです。</block>
   <block id="6e0b19728555d1c2b7bc98ce7895aced" category="list-text">頻度の設定を指定します。</block>
@@ -48,7 +43,6 @@
   <block id="fa23470db7b9905492d6e4cdd14b03e5" category="paragraph">バックアップ後に SnapMirror を更新</block>
   <block id="a7352564cfc3174fc18763ada4c4e33e" category="paragraph">プライマリバックアップボリュームとの SnapMirror 関係がある別のボリュームにバックアップセットのミラーコピーを作成する場合は、このオプションを選択します。
 ミラーバックアップ関係が設定されたボリュームでバックアップをミラーバックアップデスティネーションにコピーする場合は、「バックアップ後に SnapVault を更新」オプションのみを選択する必要があります。</block>
-  <block id="449ebe6b7b153c1de3b22c54152f11dd" category="paragraph">このオプションは、 SnapCenter Plug-in for VMware vSphere 4.5 以降の FlexGroup ボリュームのデータストアでサポートされます。</block>
   <block id="05c92158f412c4a911e0b21a09762bf2" category="paragraph">バックアップ後に SnapVault を更新してください</block>
   <block id="7f7a2015d521bd1848a92d266cd3fae5" category="paragraph">プライマリバックアップボリュームとの SnapVault 関係がある別のボリュームでディスクツーディスクバックアップレプリケーションを実行する場合は、このオプションを選択します。</block>
   <block id="ec9a0601ee927cc668ce79eac801b520" category="paragraph">ボリュームに mirror-vault 関係が設定されている場合は、このオプションのみを選択する必要があります。</block>
@@ -60,12 +54,10 @@ Snapshot ラベルは、このポリシーで作成された Snapshot をセカ�
   <block id="a7ef08fff5cdd9899a1574f69f5c4428" category="paragraph">VM 整合性</block>
   <block id="c5622748b0dae394073783566c4253de" category="paragraph">バックアップジョブが実行されるたびに VM を休止して VMware スナップショットを作成する場合は、このチェックボックスをオンにします。</block>
   <block id="5fe139943a50a82fa435d79d3988038a" category="paragraph">VM整合性バックアップを実行するには、VMでVMwareツールを実行する必要があります。VMware Tools が実行されていない場合は、代わりに crash-consistent バックアップが実行されます。</block>
-  <block id="d619892da7c9e176ad3a4bb3414fcef1" category="paragraph">VM 整合性ボックスをオンにすると、バックアップ処理に時間がかかり、より多くのストレージスペースが必要になる場合があります。このシナリオでは、 VM を最初に休止したあと、 VMware によって VM 整合性のある Snapshot が実行され、 SnapCenter によってバックアップ処理が実行されたあと、 VM の処理が再開されます。</block>
   <block id="fe8e8bb4e4841e4b613a335eb4397fa6" category="paragraph">VM ゲストメモリは VM 整合性スナップショットに含まれません。</block>
   <block id="5b5f807a09f098321a7b30d765219c05" category="paragraph">独立型ディスクのデータストアを含める</block>
   <block id="495ad64d2a6a40cfac27d689d4edd34b" category="paragraph">一時的なデータを含む独立型ディスクのデータストアをバックアップに含める場合は、このチェックボックスをオンにします。</block>
   <block id="a83f1ca5ad00b39773d9e6a26b0e70b2" category="paragraph">スクリプト</block>
-  <block id="38e0c62f029f528b565802759f84d383" category="paragraph">バックアップ処理の前後に SnapCenter VMware プラグインを実行するプリスクリプトまたはポストスクリプトの完全修飾パスを入力します。たとえば、 SNMP トラップの更新、アラートの自動化、ログの送信などをスクリプトで実行できます。スクリプトパスは、スクリプト実行時に検証されます。</block>
   <block id="7e3f0e5af0f3deb2b599c2b06c202c37" category="paragraph">プリスクリプトとポストスクリプトは仮想アプライアンス VM 上にある必要があります。複数のスクリプトを入力するには、各スクリプトパスの後にEnterキーを押して、各スクリプトを個別の行に表示します。セミコロンは使用できません。</block>
   <block id="0e966e38f37db4fe0a9b1d6f014e044c" category="paragraph">ポリシーが作成されたことを確認し、ポリシーページでポリシーを選択してポリシーの設定を確認できます。</block>
   <block id="0a5120b477a12d0b58555a4a46c5269c" category="summary">サポートされないワークフロー</block>
@@ -213,12 +205,10 @@ Snapshot ラベルは、このポリシーで作成された Snapshot をセカ�
   <block id="8ced16f68a9710f544fa07b75b031531" category="list-text">AWS上の各VMCを、VM用のBlueXP Backup and Recoveryの個別のインスタンスとペアリングする必要があります。</block>
   <block id="a0b8712c405e33c495bcbf0f2430f84e" category="list-text">VMのBlueXPのバックアップとリカバリの各インスタンスを個別のLinux VMとして導入する必要があります。</block>
   <block id="25950cd6c2e7c3d5805a7155cfa39e2a" category="paragraph">たとえば、AWSのVMCの6つの異なるインスタンスからバックアップを実行する場合は、6つのホストにVMインスタンスのBlueXPバックアップ/リカバリを6つ導入し、AWSの各VMCをVMのBlueXPバックアップ/リカバリの固有のインスタンスとペアにする必要があります。</block>
-  <block id="2aa21a5ffa0dab32f9fd25622fcf534d" category="summary">BlueXPのVM向けバックアップ/リカバリは、VMware Cloud on AWSおよびAmazon FSx for NetApp ONTAP上のVMとデータストアにデータ保護サービスを提供するスタンドアロン仮想アプライアンス（オープン仮想アプライアンス形式）です。BlueXPのVMのバックアップとリカバリを使用して、データストアをバックアップしたり、仮想マシンを元の場所にリストアしたりできます。</block>
   <block id="26a15d7986f1607a9f7daa4efd926c80" category="doc">Amazon FSx上の仮想マシン向けBlueXPバックアップ/リカバリ</block>
   <block id="f5eab3d317d6c4d95063c4bb5c161509" category="list-text">Amazon FSxでバックアップできるのはNFSタイプのデータストアのみです。</block>
   <block id="2efffbafe41056b8a16eaa739e9b56e7" category="list-text">NFSデータストアをバックアップするには、ONTAP 9.10以降を実行している必要があります。</block>
   <block id="32b36f1d8e8c3d59e6463ae39985c79f" category="list-text">VMware Cloudには、事前定義された「CloudAdmin」ロールが用意されています。CloudAdminロールには、SDDCワークロードと、ストレージポリシー、コンテンツライブラリ、vSphereタグ、リソースプールなどの関連オブジェクトを作成および管理するために必要な権限があります。</block>
-  <block id="94cc43cd13438a1a44297fe4d9e5a397" category="list-text">VMとVMDKを現在の場所にリストアできます（In Placeリストア）。</block>
   <block id="243263104c829e77835d632f591230d5" category="summary">ネットアップテクニカルサポートでサポートケースをオープンするには、まずNetApp Support Site アカウントをBlueXPに追加し、サポートに登録する必要があります。</block>
   <block id="42748df9eaa0be17ddc5cc1593cf57ab" category="doc">サポートに登録します</block>
   <block id="0b0e252af8897fbe981ec6682d2aa33b" category="section-title">サポート登録の概要</block>
@@ -305,8 +295,6 @@ Snapshot ラベルは、このポリシーで作成された Snapshot をセカ�
   <block id="14526abd8bda5af347775025cd5342cf" category="inline-link">コミュニティ</block>
   <block id="410fdb9caa9c64da2ff3f88f4836960d" category="list-text"><block ref="410fdb9caa9c64da2ff3f88f4836960d" category="inline-link-rx"></block></block>
   <block id="00c5fef3bb9d593ae96bf5d2ee60354a" category="paragraph">BlueXPコミュニティに参加して、進行中のディスカッションをフォローしたり、新しいディスカッションを作成したりできます。</block>
-  <block id="80b1b0d2b1ebf2b3cba2d25759801afd" category="list-text">mailto ： ng-cloudmanager-feedback@netapp.com [ フィードバックメール ]</block>
-  <block id="6702efec14563f45f1ee2f8c613b8ad8" category="paragraph">お客様のご意見をお考えください。フィードバックを送信して、BlueXPの改善に役立ててください。</block>
   <block id="d88bacf2a9fdcbbc844edcba97c34e30" category="section-title">ネットアップサポートと一緒にケースを作成します</block>
   <block id="82812db645b6ff5e9c2a24ddfb66c8d6" category="paragraph">上記のセルフサポートオプションに加え、サポートを有効にしたあとで問題が発生した場合は、ネットアップサポートの担当者と相談して解決できます。</block>
   <block id="8fece025a1a8fef7018449bf104a2527" category="list-title">始める前に</block>
@@ -391,18 +379,14 @@ Snapshot ラベルは、このポリシーで作成された Snapshot をセカ�
   <block id="53cfd56b3608a4ed4c03e8e0c5caae45" category="paragraph">データストアはリストアできませんが、データストア内の任意の仮想マシンをリストアできます。</block>
   <block id="6d7ec4cee1b0c4e3059a9c3d8bb71046" category="list-text">仮想マシンのVMware整合性スナップショットの失敗。</block>
   <block id="45ece8b1113e383b0e7e2917cb3d88a5" category="paragraph">仮想マシンのVMware整合性スナップショットに障害が発生した場合でも、仮想マシンはバックアップされます。バックアップコピーに格納されたエンティティは、リストアウィザードで表示し、リストア処理に使用できます。</block>
-  <block id="a638ca591549f6494bfb64fca964731b" category="list-text">VMware vSphere Web Client GUIで、ツールバーの*[メニュー]*をクリックし、*[インベントリ]*をクリックして*[仮想マシンおよびテンプレート]*を選択します。</block>
-  <block id="c22f3159395e7ce6c9a8b604106623f7" category="list-text">左側のナビゲーションペインで、*[仮想マシン]*を右クリックし、ドロップダウンリストから*[Cloud NetApp Backup]*を選択し、*[リストア]*を選択してウィザードを開始します。</block>
   <block id="de43308fec906273acd64a6aed609cb8" category="list-text">リストア * ウィザードの * バックアップの選択 * ページで、リストアするバックアップ Snapshot コピーを選択します。</block>
   <block id="43bf8720e765e5ec5249782941ceb574" category="paragraph">特定のバックアップ名またはバックアップ名の一部を検索するか、フィルタアイコンをクリックして日時の範囲、 VMware スナップショットの有無、マウントするバックアップの有無、および場所を選択して、バックアップリストをフィルタリングすることができます。[OK] をクリックしてウィザードに戻ります。</block>
-  <block id="664749414cf1bca3f1fd4f2bfac452d3" category="list-text">[Select Scope]ページで、[Restore scope]フィールドで*[Entire Virtual Machine]*を選択し、リストア先を選択してから、バックアップをマウントするデスティネーションESXiの情報を入力します。</block>
   <block id="9d7f2f9bd72cb1eb66d906abadf682b1" category="paragraph">パーシャル・バックアップをリストアする場合、リストア処理では * Select Scope * ページがスキップされます。</block>
   <block id="4a501b597bd4167c209d8bdff7aa576e" category="list-text">リストア処理後に仮想マシンの電源をオンにする場合は、[* Restart VM]*チェックボックスを有効にします。</block>
   <block id="de179e769f37bceb37b99454fcd0fc9f" category="list-text">[ * 場所の選択 * ] ページで、リストアしたデータストアの場所を選択します。</block>
   <block id="fca1924bee8a7a6fbfd8c512efe56373" category="list-text">[概要]*ページを確認し、*[完了]*をクリックします。</block>
   <block id="ba4e58f4bc0a74931646cad754c7a04b" category="list-text">*オプション*：画面下部の*[最近のタスク]*をクリックして、処理の進捗状況を監視します。</block>
   <block id="5fc34c96a53e88e10cd1df77a72005f4" category="list-text">リストアした仮想マシンをリソースグループに追加します。</block>
-  <block id="a1c0ec7f7265d7d6dfdfe38fee9792ba" category="paragraph">仮想マシンはリストアされますが、以前のリソースグループに自動的に追加されることはありません。そのため、リストアした仮想マシンを適切なリソースグループに手動で追加する必要があります。</block>
   <block id="a6fc5033cd7d2f5d0e979c35a6273cb2" category="sidebar">BlueXPのVM向けバックアップ/リカバリは、VMware Cloud on AWSおよびAmazon FSx for NetApp ONTAP上のVMとデータストアにデータ保護サービスを提供するスタンドアロン仮想アプライアンス（オープン仮想アプライアンス形式）です。</block>
   <block id="be11c74c1dd7f307bb80183a90dc2067" category="sidebar">はじめに</block>
   <block id="d371b3e46ec1452b89412f2da008cb64" category="sidebar">BlueXPのVMのバックアップとリカバリについて説明します</block>
@@ -456,4 +440,108 @@ Snapshot ラベルは、このポリシーで作成された Snapshot をセカ�
   <block id="6bfaca7cf08b162bbacdc9479a2ca693" category="list-text">AWSコンソールで、FSx for ONTAPが実行されているVPCのセキュリティグループを更新して、VMのBlueXPバックアップとリカバリがFSx for ONTAPにアクセスできるようにする必要があります。</block>
   <block id="852604ac38f959dae2ec3b3009d3fc07" category="paragraph">仮想マシンのVMとデータストアを保護するには、VMに対してBlueXPのバックアップとリカバリを導入する必要があります。</block>
   <block id="ebfc4f565cf4b541e8d94e4baad23f9f" category="list-text">vCenterと同じタイムゾーンのVMについて、BlueXPのバックアップとリカバリを導入しておく必要があります。</block>
+  <block id="f96fc24033e8d605c26d6a193ece4735" category="summary">データストアをアンマウントすると、ストレージへのホストアクセスが削除されます。</block>
+  <block id="39d50f244e1868cb8a2b803c9636bc01" category="doc">データストアのアンマウント</block>
+  <block id="3cd20156fa10057c7f84a9e13d691b32" category="paragraph">データストア内のファイルにアクセスする必要がなくなった場合は、バックアップをアンマウントできます。</block>
+  <block id="c4b336e25d1d76223f7be8ec67116ae1" category="list-text">VMware vSphere Clientで、 <block ref="2c7a3a063e070bff2c7013040c629ab6" category="inline-image-macro-rx" type="image"></block> &gt;*インベントリ*&gt;*ストレージ*。</block>
+  <block id="ea4aa728420cdbc4e91f43d8f208a387" category="list-text">左側のナビゲーションペインで、データストアを右クリックし、ドロップダウンリストから*[BlueXP backup and recovery for VMs]*を選択し、2番目のドロップダウンリストから*[Unmount]*を選択します。</block>
+  <block id="e68d40414316869d2023656b071a3cc1" category="admonition">アンマウントするデータストアを間違えないようにしてください。そうしないと、原因が本番環境に与える影響が発生する可能性があります。</block>
+  <block id="d037dda36a87414a61863f9819373352" category="list-text">[バックアップのアンマウント]*ダイアログボックスで、データストアを選択し、*[データストアのアンマウント]*チェックボックスを選択して*[アンマウント]*をクリックします。</block>
+  <block id="2d0f1b3171ada6a708622495820dc6ca" category="list-text">オプション：データストアがアンマウントされたことを確認するには、VMware vSphere Clientのツールバーで*[BlueXP backup and recovery for VMs]*をクリックします。</block>
+  <block id="2c93911421766329f252684e3f3e6a9a" category="paragraph">アンマウントしたデータストアが、ダッシュボードの*[最近のジョブアクティビティ]タイルに表示されます。</block>
+  <block id="d6c2cf7a5e232dbc0143ea4754644660" category="paragraph">VM は次の場所にリストアできます。</block>
+  <block id="abfc7c0c366258e23e15cd12a5f89811" category="list-text">元の場所にリストアします</block>
+  <block id="b14e0e0fe870958315bd1b702bfa088a" category="list-text">を元の ESXi ホストにマウントされている元のデータストアに（元の VM が上書きされます）</block>
+  <block id="25e66e51214e8342374fa891a42988b3" category="list-text">別の場所にリストアします</block>
+  <block id="de3711ff558e3312b6d68350183b2c3f" category="list-text">をリストアします</block>
+  <block id="bed9956f25b8fb4ba78345f151a537d8" category="list-text">を、同じ vCenter で管理されている別の ESXi ホストにマウントされている元のデータストアにコピーします</block>
+  <block id="27657d207d680aabbb0436d2a26f9fb5" category="list-text">同じ vCenter で管理されている別の ESXi ホストにマウントされている別のデータストアに追加します</block>
+  <block id="f3e1d3164ec8218a6bb15fb425baca03" category="list-text">リンクモードの別の vCenter で管理されている別の ESXi ホストにマウントされている別のデータストアに</block>
+  <block id="64fc816481e420ca3dd15e834108d01c" category="list-text">VMware vSphere Clientのツールバーで、*[ホストおよびクラスタ]*をクリックし、ストレージシステムを選択します。</block>
+  <block id="b7604f0251d8cb7b20bb46387d4fa112" category="list-text">左側のナビゲーションペインで、*[仮想マシン]*を右クリックし、ドロップダウンリストから*[BlueXP backup and recovery for VMs]*を選択し、*[リストア]*を選択してウィザードを開始します。</block>
+  <block id="5fcf3e820d970b3b51da55a74053bff4" category="list-text">[Select Scope]ページで、[Restore scope]フィールドで*[Entire Virtual Machine]*を選択し、リストア先を選択してから、バックアップをマウントするデスティネーション情報を入力します。</block>
+  <block id="d1b4b1cd20ab56951a39c9cd9ce19c90" category="paragraph">[VM name]フィールドに同じVM名が存在する場合、新しいVM名の形式は「&lt;vm_name&gt;_&lt;timestamp&gt;」です。</block>
+  <block id="877b234cb8dde57dd3552ee0fa6dd068" category="paragraph">新しくリストアしたVMが保護されていることを確認します。保護されていない場合は、リストアしたVMを適切なリソースグループに手動で追加して保護します。</block>
+  <block id="3033609d5306603608d735baccf4bd2b" category="list-text">Snapshotコピーをミラーセカンダリストレージまたはバックアップセカンダリストレージにレプリケートする場合は、関係が設定され、ソースボリュームとデスティネーションボリュームのストレージシステムが登録されている必要があります。</block>
+  <block id="8878994197a1eb014f3822817736fcb9" category="list-text">[ポリシー]*ページで、*[作成]*をクリックしてウィザードを開始します。</block>
+  <block id="906916a1f3ea00481784d2dcf7dafe3d" category="paragraph"><block ref="906916a1f3ea00481784d2dcf7dafe3d" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="a051f3eeac4a83ec1f5d55c7aeba6f06" category="paragraph">アンダースコア文字（ _ ）を使用できます。</block>
+  <block id="6648fd21234a7ed16d280775be5d73d3" category="paragraph"><block ref="6648fd21234a7ed16d280775be5d73d3" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="22ddbe0d13874b1cf1816994bfb92854" category="list-text">Snapshotを改ざんしない場合は、* Snapshot Locking *を有効にして、ロック期間を指定します。</block>
+  <block id="4407de106f219fb35e16ce58d30ce466" category="paragraph">VM 整合性ボックスをオンにすると、バックアップ処理に時間がかかり、より多くのストレージスペースが必要になる場合があります。このシナリオでは、まずVMを休止し、VMwareがVMと整合性のあるSnapshotを実行します。次に、VMのBlueXPのバックアップとリカバリが実行され、VMの処理が再開されます。</block>
+  <block id="aa187ea824295bae24279cd87aa6279e" category="paragraph">バックアップ処理の前後にVMのバックアップとリカバリを実行するプリスクリプトまたはポストスクリプトの完全修飾パスを入力します。たとえば、 SNMP トラップの更新、アラートの自動化、ログの送信などをスクリプトで実行できます。スクリプトパスは、スクリプト実行時に検証されます。</block>
+  <block id="eea84aa4972695e692e8e0af29506317" category="section-title">2024年1月18日</block>
+  <block id="c454b492adb20af990d3eb80d9725024" category="section-title">BlueXPのVMのバックアップとリカバリの機能拡張</block>
+  <block id="88296380f7b22200bdb3a792027dbfba" category="paragraph">BlueXPのVM 1.1のバックアップとリカバリでサポートされる機能は次のとおりです。</block>
+  <block id="20573cc6d2bbd67be6c8a0862fe019b1" category="list-text">別の場所への仮想マシンのリストア</block>
+  <block id="e6c57d58792f45f044a6326df3ec9b9a" category="list-text">指定した時間までSnapshotコピーが改ざんされないようにするには、[Snapshot Locking]を有効にします。</block>
+  <block id="e69ce0a516b6d7c2380f82c696ffdc01" category="summary">BlueXPのVM向けバックアップ/リカバリは、VMware Cloud on AWSおよびAmazon FSx for NetApp ONTAP上のVMとデータストアにデータ保護サービスを提供するスタンドアロン仮想アプライアンス（オープン仮想アプライアンス形式）です。BlueXPのVMのバックアップとリカバリを使用すると、データストアをバックアップしたり、仮想マシンや仮想マシンディスクを元の場所や別の場所にリストアしたりできます。</block>
+  <block id="e5b0b42f445b647df62d6e378f8c71ec" category="list-text">VMとVMDKを現在の別の場所にリストアできます。</block>
+  <block id="03a12a6e6ba231b7d5d26aa91ab1c483" category="summary">データストアをマウントすると、ホストからストレージにアクセスできるようになります。</block>
+  <block id="465833e93b7ab22dbb9e82189b3e9e87" category="doc">データストアのマウント</block>
+  <block id="e9556d2cd2c6ff28b597944a3b785e8e" category="paragraph">バックアップ内のファイルにアクセスする必要がある場合は、バックアップからデータストアをマウントできます。</block>
+  <block id="2a38ae4c83d289abb42511affbb07bf4" category="list-text">VMCポータルから組織IDとAPIトークンをコピーし、VMware Cloud Servicesの設定に追加してください。</block>
+  <block id="482372f5186290234c8109307262c7be" category="list-text">代替 ESXi ホストがストレージに接続できることを確認します</block>
+  <block id="cec76647343575fe6b9cf1128e302531" category="paragraph">代替のESXiホストにマウントする場合は、代替のESXiホストがストレージに接続できること、およびUIDとGIDが元のホストと同じであることを確認する必要があります。</block>
+  <block id="36ac03001da28a77e53d1f4a7952232b" category="list-text">左側のナビゲーションペインで、データストアを右クリックし、ドロップダウンリストから*[BlueXP backup and recovery for VMs]*を選択し、2番目のドロップダウンリストから*[Mount Backup]*を選択します。</block>
+  <block id="4c0655114e99963e8ddb74fda03d0cfd" category="list-text">[データストアのマウント]*ページで、バックアップとバックアップの場所（プライマリまたはセカンダリ）を選択し、*[マウント]*をクリックします。</block>
+  <block id="455924390ea1901df9e61972f8625d0b" category="list-text">オプション：データストアがマウントされていることを確認するには、VMware vSphere Clientのツールバーで*[BlueXP backup and recovery for VMs]*をクリックします。</block>
+  <block id="e5310669f868395e66162957e92eca88" category="paragraph">マウントしたデータストアが、ダッシュボードの*[最近のジョブアクティビティ]タイルに表示されます。</block>
+  <block id="88beb2e51cd0b895e36e8a71f5ddd38c" category="paragraph">ボリュームのクローニング時に新しい Snapshot コピーが作成されないようにするには、 SnapVault ボリュームの ONTAP スケジュールを無効にします。以前の既存の Snapshot コピーは削除されません。</block>
+  <block id="dcf94d150ec9b7aa351d3e16a1ec3ba4" category="summary">REST APIにアクセスするには、次の手順を実行します。</block>
+  <block id="aba5f0a683edf4f29d2940f278f2d102" category="doc">Swagger API Web ページから REST API にアクセスします</block>
+  <block id="968e6c7f8992185c40c92b74c5a315cf" category="paragraph">REST API は Swagger Web ページから利用できます。VM REST APIのBlueXPのバックアップとリカバリを表示するには、Swagger Webページにアクセスします。</block>
+  <block id="f3ec2c5138898d84ec08804d9dcdd9ad" category="paragraph">VM REST APIのBlueXPのバックアップとリカバリについては、VMアプライアンスのBlueXPバックアップとリカバリのIPアドレスまたはホスト名を確認しておく必要があります。</block>
+  <block id="061c36e9d3e7d9f981cf79561c7144ed" category="admonition">このプラグインでは、サードパーティのアプリケーションと統合する目的で REST API のみがサポートされます。 PowerShell コマンドレットや CLI はサポートされません。</block>
+  <block id="52db7b85d2725f40516c0dbc0da17ca6" category="list-text">ブラウザから、 URL を入力してプラグイン Swagger Web ページにアクセスします。</block>
+  <block id="072db018962874e15c5db8115caf16b2" category="paragraph"><block ref="a0238ff2a353c960ac459ebcb9a9ea42" category="inline-link-rx"></block></block>
+  <block id="b8ae0b462402a081bf316840fb878f9e" category="admonition">REST API URL には、 + 、を使用しないでください。、 % 、および &amp; 。</block>
+  <block id="938f1047c15f00fdd0cbfc8e4cfa15e1" category="paragraph">* 例 *</block>
+  <block id="7279be9bb03d1390b3ea8dfa85feb320" category="paragraph">BlueXPのVM REST APIのバックアップとリカバリにアクセスします。</block>
+  <block id="80ad72a4cb203d4379ce7f08e911bc19" category="paragraph"><block ref="2c783b3b5dbe20b878f13c43894996ce" category="inline-link-rx"></block></block>
+  <block id="a23affc3c3582aef164dcc126289abc5" category="paragraph">ログインvCenter認証メカニズムを使用してトークンを生成します。</block>
+  <block id="9ce66f05fe7909f94e1823660b617ddf" category="list-text">API リソースタイプをクリックすると、そのリソースタイプの API が表示されます。</block>
+  <block id="e25f9b9a6d51c291f229ba4ce1ef934b" category="summary">1つ以上のVMDKをVMに接続します。</block>
+  <block id="7da61cf8aa5a3e11b9b2b76cf8de6c2b" category="doc">VM に VMDK を接続する</block>
+  <block id="6d2c0b899729f6fc65bb750388bf7304" category="paragraph">バックアップの 1 つ以上の VMDK を親 VM に接続したり、同じ ESXi ホストの別の VM に接続したり、同じ vCenter またはリンクモードの別の vCenter で管理されている代替 ESXi ホストの別の VM に接続したりできます。</block>
+  <block id="45a22ef9ae5f0580d5230dd9bc8f0c63" category="paragraph">これにより、ドライブ全体をリストアするのではなく、ドライブから 1 つ以上のファイルを簡単にリストアできます。必要なファイルをリストアまたはアクセスしたら、 VMDK の接続を解除できます。</block>
+  <block id="ef4f40abdcac7cd05cedfa75a38ecb05" category="paragraph">次の接続オプションがあります。</block>
+  <block id="3bd14151460ab96902cfa334d8e5b073" category="list-text">プライマリバックアップまたはセカンダリバックアップから仮想ディスクを接続できます。</block>
+  <block id="756f4f9493de655e73ea3ceedd07bf51" category="list-text">仮想ディスクは親 VM （仮想ディスクが元々関連付けられていた VM ）に接続することも、同じ ESXi ホスト上の別の VM に接続することもできます。</block>
+  <block id="8d3d48b6a47491763c9812ffa0ff2048" category="paragraph">仮想ディスクの接続には次の制限事項があります。</block>
+  <block id="19e4cacb6df1b0170d26c2a90c4be6b0" category="list-text">仮想マシンテンプレートでは、接続および接続解除はサポートされていません。</block>
+  <block id="2efd02ae05ecf109e4f1c3753ec07584" category="list-text">1つのiSCSIコントローラに15個を超えるVMDKが接続されている場合、VMwareの制限により、BlueXPのVMのバックアップおよびリカバリ用仮想マシンで15より大きいVMDKユニット番号が見つかりません。</block>
+  <block id="0a1c13cb7f3a6f85002911ef724d47ba" category="paragraph">この場合、 SCSI コントローラを手動で追加し、接続操作をやり直してください。</block>
+  <block id="02067153d760664147d364495bc1d86d" category="list-text">接続処理とリストア処理は、デフォルトの SCSI コントローラを使用して VMDK に接続します。NVMe コントローラを搭載した VM に接続されている VMDK がバックアップされますが、接続処理およびリストア処理では、 SCSI コントローラを使用して再接続されます。</block>
+  <block id="278e4864ce5f71db27c5e68928088836" category="list-text">VMware vSphere Clientで、 <block ref="2c7a3a063e070bff2c7013040c629ab6" category="inline-image-macro-rx" type="image"></block> &gt;*インベントリ*&gt;*ホストおよびクラスタ*。</block>
+  <block id="bcedd2e314a87392acbcde7ec5b98fbb" category="list-text">左側のナビゲーションペインで、*[仮想マシン]*を右クリックし、ドロップダウンリストから*[BlueXP backup and recovery for VMs]*を選択し、*[仮想ディスクの接続]*を選択します。</block>
+  <block id="5929be7ebf476e33b9ad3aea37fa87db" category="list-text">[仮想ディスクの接続]ウィンドウの*[バックアップ]セクション*で、バックアップを選択します。</block>
+  <block id="f29ee91ad0dce3a499c44ec0016398eb" category="paragraph">バックアップリストをフィルタするには、フィルタアイコンを選択し、日時の範囲、VMware Snapshotコピーを含むバックアップの有無、マウントの有無、および場所を選択します。[OK] をクリックします。</block>
+  <block id="775753d105c5c21b1080c5ea812205ff" category="list-text">ディスクの選択 * セクションで、接続するディスクを 1 つ以上選択し、接続元の場所（プライマリまたはセカンダリ）を選択します。</block>
+  <block id="0ccbe2c092fc378c75aa9ebb7bd7d5ab" category="paragraph">フィルタを変更して、プライマリとセカンダリの場所を表示できます。</block>
+  <block id="99721936171b079bed2194af73a3e943" category="list-text">デフォルトでは、選択した仮想ディスクが親 VM に接続されます。選択した仮想ディスクを同じESXiホスト内の代替VMに接続するには、*[ここをクリックして代替VMに接続]*をクリックし、代替VMを指定します。</block>
+  <block id="2f80c7c6141a4d837c0d3b3d563d7ec1" category="list-text">[* 添付（ Attach ） ] をクリックします</block>
+  <block id="3a258a61f1abdb721cb6de8642d42eb3" category="list-text">オプション：「最近のタスク」セクションで処理の進捗状況を監視します。</block>
+  <block id="14dae1427bcb2f84e900779dbbccd66f" category="paragraph">更新された情報を表示するには、画面を更新します。</block>
+  <block id="c8d1e2af1ae3c89145fae7a06f3527d2" category="list-text">次の手順を実行して、仮想ディスクが接続されたことを確認します。</block>
+  <block id="2b47e47a91e8d341f2ea5083a977170c" category="list-text">ツールバーの * メニュー * をクリックし、ドロップダウンリストから * VMS and Templates * を選択します。</block>
+  <block id="dd185a0a59b8b49a3a96be6de1271479" category="list-text">左側のナビゲーションペインで VM を右クリックし、ドロップダウンリストから * 設定の編集 * を選択します。</block>
+  <block id="53458ddf4cca411e8218b9e8a4d2abea" category="list-text">[ 設定の編集 *] ウィンドウで、各ハードディスクのリストを展開してディスクファイルのリストを表示します。</block>
+  <block id="d179ad7e63e6982bb3ee3c16224d9dd1" category="paragraph">[Edit Settings] ページには、 VM 上のディスクが一覧表示されます。各ハードディスクの詳細を展開して、接続されている仮想ディスクのリストを確認できます。</block>
+  <block id="6f629cc9e935a4af9aee9b4e5b3249df" category="paragraph">*結果*：
+接続されたディスクにホストオペレーティングシステムからアクセスし、ディスクから必要な情報を取得できます。</block>
+  <block id="90c46daf091476d4abbd6c115c9d683f" category="summary">VMに対してBlueXPのバックアップとリカバリを使用する前に、制限事項を理解しておく必要があります。</block>
+  <block id="482723983a4f2af954e36ff41e567451" category="doc">既知の制限</block>
+  <block id="5d8aef9555e5438ddeff623786db2956" category="paragraph">既知の制限事項には、このリリースの製品でサポートされていない機能、またはこのリリースと正しく相互運用できない機能が記載されています。これらの制限事項を慎重に確認してください</block>
+  <block id="47a0bf38b0e7cc54e0a0ff1bef23a9e7" category="list-text">VMのBlueXPのバックアップとリカバリでは、Amazon FSx for ONTAPの日次自動バックアップはサポートされていません。</block>
+  <block id="a6c661857bb9faf4d1d2121855e170ac" category="list-text">マウントできるデータストアの最大数は4個です。</block>
+  <block id="8c5ce72a53d4aa7bc5c8cbb67cf764b1" category="list-text">Snapshotのロックが有効になっている場合、VMのBlueXPのバックアップとリカバリでセカンダリの場所が2回表示されます。この問題は、ONTAP 9.14.1RC1、ONTAP 9.13.1P4 - ONTAP 9.13.1P5、およびONTAP 9.12.1P8 - ONTAP 9.12.1P9で修正されています。</block>
+  <block id="656b1941061949fe21d495b2d2fa4764" category="doc">仮想ディスクを接続解除</block>
+  <block id="6fc948db6bfb5ca3b3b32b543334051c" category="paragraph">仮想ディスクを接続して個々のファイルをリストアしたあとに、親 VM から仮想ディスクの接続を解除することができます。</block>
+  <block id="ab952ab9a747427147b3f05f314b597d" category="list-text">左側のナビゲーションペインで、*[仮想マシン]*を右クリックし、ドロップダウンリストから*[BlueXP backup and recovery for VMs]*を選択し、*[仮想ディスクの接続解除]*を選択します。</block>
+  <block id="22a57baae518fd2d4ed143d6b95d5f38" category="list-text">[仮想ディスクの接続解除]ダイアログボックスで、接続を解除するディスクを1つ以上選択し、*[選択したディスクの接続解除]*チェックボックスを選択して*[接続解除]*をクリックします。</block>
+  <block id="bbdcfd9257f4afda91a64894f3ae3263" category="list-text">次の手順を実行して、仮想ディスクの接続が解除されたことを確認します。</block>
+  <block id="fa8d7e4bdd9c439bca012f3548cbda0b" category="sidebar">OracleおよびMS®SQLワークロードの保護</block>
+  <block id="33871b6190a8d5adbe8b15282054766c" category="sidebar">新機能</block>
+  <block id="56221c5b2b531b839a3cd5c7e9c9cd9f" category="sidebar">REST APIにアクセスできます</block>
 </blocks>

@@ -1,0 +1,19 @@
+---
+permalink: reference-limitations.html 
+sidebar: sidebar 
+keywords: limitations 
+summary: VMに対してBlueXPのバックアップとリカバリを使用する前に、制限事項を理解しておく必要があります。 
+---
+= 既知の制限
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+[role="lead"]
+既知の制限事項には、このリリースの製品でサポートされていない機能、またはこのリリースと正しく相互運用できない機能が記載されています。これらの制限事項を慎重に確認してください
+
+* VMのBlueXPのバックアップとリカバリでは、Amazon FSx for ONTAPの日次自動バックアップはサポートされていません。
+* マウントできるデータストアの最大数は4個です。
+* Snapshotのロックが有効になっている場合、VMのBlueXPのバックアップとリカバリでセカンダリの場所が2回表示されます。この問題は、ONTAP 9.14.1RC1、ONTAP 9.13.1P4 - ONTAP 9.13.1P5、およびONTAP 9.12.1P8 - ONTAP 9.12.1P9で修正されています。
+

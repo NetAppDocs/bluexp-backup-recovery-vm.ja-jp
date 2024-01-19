@@ -34,3 +34,5 @@ indexpage:
       url: https://www.youtube.com/watch?v=cLWOFm_3g3U
     - title: FSx for ONTAPデータストアのVMとVMDKをリストア
       url: https://www.youtube.com/watch?v=RVLYP0lguxkM
+    - title: OracleおよびMS®SQLワークロードの保護
+      url: https://community.netapp.com/t5/Tech-ONTAP-Blogs/Protect-Oracle-MS-SQL-workloads-using-NetApp-SnapCenter-in-VMware-Cloud-on-AWS/ba-p/449168

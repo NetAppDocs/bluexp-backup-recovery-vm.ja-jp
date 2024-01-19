@@ -2,7 +2,7 @@
 permalink: concept-bluexp-backup-and-recovery-for-virtual-machines-on-amazon-fsx.html 
 sidebar: sidebar 
 keywords: bluexp, backup, recovery, virtual machines, amazon fsx 
-summary: BlueXPのVM向けバックアップ/リカバリは、VMware Cloud on AWSおよびAmazon FSx for NetApp ONTAP上のVMとデータストアにデータ保護サービスを提供するスタンドアロン仮想アプライアンス（オープン仮想アプライアンス形式）です。BlueXPのVMのバックアップとリカバリを使用して、データストアをバックアップしたり、仮想マシンを元の場所にリストアしたりできます。 
+summary: BlueXPのVM向けバックアップ/リカバリは、VMware Cloud on AWSおよびAmazon FSx for NetApp ONTAP上のVMとデータストアにデータ保護サービスを提供するスタンドアロン仮想アプライアンス（オープン仮想アプライアンス形式）です。BlueXPのVMのバックアップとリカバリを使用すると、データストアをバックアップしたり、仮想マシンや仮想マシンディスクを元の場所や別の場所にリストアしたりできます。 
 ---
 = Amazon FSx上の仮想マシン向けBlueXPバックアップ/リカバリ
 :allow-uri-read: 
@@ -11,10 +11,10 @@ summary: BlueXPのVM向けバックアップ/リカバリは、VMware Cloud on A
 
 
 [role="lead"]
-BlueXPのVM向けバックアップ/リカバリは、VMware Cloud on AWSおよびAmazon FSx for NetApp ONTAP上のVMとデータストアにデータ保護サービスを提供するスタンドアロン仮想アプライアンス（オープン仮想アプライアンス形式）です。BlueXPのVMのバックアップとリカバリを使用して、データストアをバックアップしたり、仮想マシンを元の場所にリストアしたりできます。
+BlueXPのVM向けバックアップ/リカバリは、VMware Cloud on AWSおよびAmazon FSx for NetApp ONTAP上のVMとデータストアにデータ保護サービスを提供するスタンドアロン仮想アプライアンス（オープン仮想アプライアンス形式）です。
 
 * Amazon FSxでバックアップできるのはNFSタイプのデータストアのみです。
 * NFSデータストアをバックアップするには、ONTAP 9.10以降を実行している必要があります。
 * VMware Cloudには、事前定義された「CloudAdmin」ロールが用意されています。CloudAdminロールには、SDDCワークロードと、ストレージポリシー、コンテンツライブラリ、vSphereタグ、リソースプールなどの関連オブジェクトを作成および管理するために必要な権限があります。
-* VMとVMDKを現在の場所にリストアできます（In Placeリストア）。
+* VMとVMDKを現在の別の場所にリストアできます。
 
